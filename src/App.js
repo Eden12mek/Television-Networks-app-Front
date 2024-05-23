@@ -1,17 +1,20 @@
 import React from 'react';
-import MovieTable from './Components/Tables/MovieTable';
+import { BrowserRouter as Router } from 'react-router-dom'; // Import BrowserRouter
 
+import Sidebar from './Components/TV/Sidebar';
 
 const App = () => {
   const data = [
     { column1: 'Row 1 Column 1', column2: 'Row 1 Column 2' },
     { column1: 'Row 2 Column 1', column2: 'Row 2 Column 2' },
-    { column1: 'Row 2 Column 1', column2: 'Row 2 Column 2' },
+    { column1: 'Row 3 Column 1', column2: 'Row 3 Column 2' }, // This seems like a typo, should it be 'Row 3'?
   ];
 
-  return <MovieTable data={data} />;
+  return (
+    <Router> {/* Wrap MovieTable with Router */}
+      <Sidebar data={data} />
+    </Router>
+  );
 }
-
-
 
 export default App;
