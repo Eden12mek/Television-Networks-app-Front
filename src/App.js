@@ -1,7 +1,8 @@
 import React from 'react';
 import { BrowserRouter as Router } from 'react-router-dom'; // Import BrowserRouter
 
-import Sidebar from './Components/TV/Sidebar';
+// import Sidebar from './Components/TV/Sidebar';
+import Login from './Components/TV/Login';
 
 const App = () => {
   const data = [
@@ -12,7 +13,7 @@ const App = () => {
 
   return (
     <Router> {/* Wrap MovieTable with Router */}
-      <Sidebar data={data} />
+      <Login data={data} />
     </Router>
   );
 }
