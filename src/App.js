@@ -1,8 +1,13 @@
 import React from 'react';
-import { BrowserRouter as Router } from 'react-router-dom'; // Import BrowserRouter
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 
 // import Sidebar from './Components/TV/Sidebar';
 import Login from './Components/TV/Login';
+import Sidebar from './Components/TV/Sidebar';
+import Channel from './Components/TV/Channel';
+import Dashboard from './Components/TV/Dashboard';
+import Program from './Components/TV/Program';
+import heni from './Components/TV/heni';
 
 const App = () => {
   const data = [
@@ -12,10 +17,14 @@ const App = () => {
   ];
 
   return (
-    <Router> {/* Wrap MovieTable with Router */}
-      <Login data={data} />
-    </Router>
-  );
+    <Router>
+    <Routes>
+        <Route path="/" element={<Dashboard />} />
+        <Route path="/channel" element={<Channel />} />
+        <Route path="/program" element={<Program />} />
+    </Routes>
+</Router>
+);
 }
 
 export default App;
