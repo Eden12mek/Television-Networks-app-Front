@@ -1,5 +1,6 @@
 import React from 'react';
 import { Box, Button, Grid, Paper, Typography, TextField, InputAdornment } from "@mui/material";
+import { Link } from 'react-router-dom';
 import PhoneIcon from '@mui/icons-material/Phone';
 import LockIcon from '@mui/icons-material/Lock';
 
@@ -53,14 +54,16 @@ const Login = () => {
               }}
               sx={{ mb: 4 }}
             />
-            <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{ py: 1.5, fontSize: '1rem' }}
-            >
-              Login
-            </Button>
+            <Link to="/dashboard">
+                <Button
+                variant="contained"
+                color="primary"
+                fullWidth
+                sx={{ py: 1.5, fontSize: '1rem' }}
+                >
+                Login
+                </Button>
+            </Link>
           </Paper>
         </Grid>
       </Grid>

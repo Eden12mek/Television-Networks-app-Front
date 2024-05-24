@@ -4,10 +4,10 @@ import { Link } from 'react-router-dom';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ChannelIcon from '@mui/icons-material/VideoLibrary';
 import ProgramIcon from '@mui/icons-material/LiveTv';
-import SearchIcon from '@mui/icons-material/Search'; // Import SearchIcon
-import SaveAltIcon from '@mui/icons-material/SaveAlt'; // Import SaveAltIcon
-import AddIcon from '@mui/icons-material/Add'; // Import AddIcon
-import CategoryIcon from '@mui/icons-material/Category'; // Import CategoryIcon
+import SearchIcon from '@mui/icons-material/Search'; 
+import SaveAltIcon from '@mui/icons-material/SaveAlt';
+import AddIcon from '@mui/icons-material/Add';
+import CategoryIcon from '@mui/icons-material/Category'; 
 
 const Dashboard = () => {
     return (

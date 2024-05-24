@@ -7,7 +7,7 @@ import Sidebar from './Components/TV/Sidebar';
 import Channel from './Components/TV/Channel';
 import Dashboard from './Components/TV/Dashboard';
 import Program from './Components/TV/Program';
-import heni from './Components/TV/heni';
+
 
 const App = () => {
   const data = [
@@ -19,9 +19,12 @@ const App = () => {
   return (
     <Router>
     <Routes>
-        <Route path="/" element={<Dashboard />} />
+        <Route path="/" element={<Login />} />
+        <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/channel" element={<Channel />} />
         <Route path="/program" element={<Program />} />
+       
+
     </Routes>
 </Router>
 );
