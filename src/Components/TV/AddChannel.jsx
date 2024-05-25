@@ -16,7 +16,7 @@ function AddChannel() {
     >
       <Box
         bgcolor="white"
-        borderRadius={2}
+        borderRadius={5}
         boxShadow={3}
         p={6}
         width="90%"
@@ -47,7 +47,7 @@ function AddChannel() {
             sx={{
               mr: 8,
               width: '100px',
-              textTransform: 'capitalize', // Set the text to title case
+              textTransform: 'capitalize', 
               fontSize: '1rem', // Set the font size
             }}
           >
@@ -59,8 +59,8 @@ function AddChannel() {
             sx={{
               mr: 3,
               width: '100px',
-              textTransform: 'capitalize', // Set the text to title case
-              fontSize: '1rem', // Set the font size
+              textTransform: 'capitalize', 
+              fontSize: '1rem', 
             }}
           >
             Add
