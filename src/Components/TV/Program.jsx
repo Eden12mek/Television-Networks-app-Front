@@ -82,9 +82,11 @@ const Program = () => {
                     <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 2 }}>
                       Add Filter
                     </Button>
+                    <Link to="/addprogram">
                     <Button startIcon={<AddIcon />} variant="contained" color="primary">
                       Add Program
                     </Button>
+                    </Link>
                   </Box>
                 </Box>
                 <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 1 }}>
