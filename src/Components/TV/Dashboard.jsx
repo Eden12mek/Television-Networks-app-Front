@@ -65,7 +65,9 @@ const Dashboard = () => {
                                     src="https://cdn.builder.io/api/v1/image/assets/TEMP/cb194586129aa8468fa164f35030b78430171bf107bdd3c47064962dff8e575e?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                                     sx={{ width: 46, height: 46, mr: 2 }}
                                 />
+                                <Link to ="/logout" >
                                 <Avatar sx={{ bgcolor: 'zinc.300', width: 50, height: 50 }} />
+                                </Link>
                             </Box>
                         </Box>
                     </Card>

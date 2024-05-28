@@ -11,6 +11,10 @@ import Program from './Components/TV/Program';
 import Logout from './Components/TV/Logout';
 import AddChannel from './Components/TV/AddChannel';
 import AddProgram from './Components/TV/AddProgram';
+import NewChannel from './Components/TV/newchannel';
+import New from './Components/TV/New';
+
+
 
 const theme = createTheme({
   // Your theme configuration here
@@ -33,8 +37,9 @@ const App = () => {
           <Route path="/program" element={<Program />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/addchannel" element={<AddChannel />} />
+          <Route path="/newchannel" element={<NewChannel />} />
           <Route path="/addprogram" element={<AddProgram />} />
-
+          <Route path="/new" element={<New />} />
         </Routes>
       </Router>
     </ThemeProvider>
