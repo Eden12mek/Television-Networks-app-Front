@@ -131,7 +131,7 @@ const Dashboard = () => {
                 <Paper elevation={3} sx={{ p: 3, mt: 3, flexGrow: 1, overflowY: 'auto', ml: 3, mr: 3, mb: 2 }}>
                     <Grid container direction="column" spacing={2} mt={-1} mr={-100}>
                         <Grid item container justifyContent="space-between" alignItems="center">
-                            <Button startIcon={<SearchIcon />} variant="outlined" sx={{ ml: 6, width: '1000px', textTransform: 'none' }}>
+                            <Button startIcon={<SearchIcon />} variant="outlined" sx={{ ml: 6, textTransform: 'none', alignItems: 'flex-start',  paddingRight: '1000px'}}>
                                 Search
                             </Button>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -141,26 +141,25 @@ const Dashboard = () => {
                                 <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 3, textTransform: 'none' }}>
                                     Add Filter
                                 </Button>
-                                <Button variant="contained" fontSize='2rem' color="primary" sx={{ mr: 4, textTransform: 'none' }} onClick={handleOpen}>
-                                    Add Channel
+                                <Button variant="contained" fontSize='2rem' color="primary" sx={{ mr: 4.5, textTransform: 'none' }} onClick={handleOpen}>
+                                    Add Filter
                                 </Button>
                             </Box>
                         </Grid>
-                        <Grid item>
-                            <Divider sx={{ width: '20%', mx: 'auto' }} />
+                        <Grid item mt={1.5} ml={5} mr={4} >
+                            <Divider sx={{ width: '99%', mx: 'auto' }} />
                         </Grid>
                         {/* <Grid item container spacing={2} sx={{ ml: 1, mt: 2 }}> */}
-                            <Grid item xs={12} md={4}>
-                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
-                                    <Box sx={{ display: 'flex',  alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6" gutterBottom>
+                        <Grid container spacing={2} sx={{ mt: 3,maxWidth:1570, justifyContent: 'space-between' , ml:4.5, mr:-1}}>
+                            <Grid item xs={4} >
+                                <Paper elevation={5} sx={{ p: 5, maxWidth: 400, maxHeight: 500, borderRadius: 3  }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box sx={{ ml: 1 }}>
+                                            <Typography fontWeight='bold' color='black' variant="h5" gutterBottom>
                                                 System User
                                             </Typography>
-                                            <Typography variant="h4">
-                                                37
-                                            </Typography>
-                                            <Typography variant="body1" color="primary">
+                                            <Typography sx={{ mt: 5 }} variant="h4">37</Typography>
+                                            <Typography sx={{ mt: 2 }} variant="h5" color="black">
                                                 +12% This Month
                                             </Typography>
                                         </Box>
@@ -168,17 +167,15 @@ const Dashboard = () => {
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
-                                    <Box sx={{ display: 'flex',  alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6" gutterBottom>
+                            <Grid item xs={4}>
+                                <Paper elevation={5} sx={{ p: 5, maxWidth: 400, maxHeight: 500, borderRadius: 3 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box sx={{ ml: 1 }}>
+                                            <Typography fontWeight='bold' color='black' variant="h5" gutterBottom>
                                                 Program
                                             </Typography>
-                                            <Typography variant="h4">
-                                                37
-                                            </Typography>
-                                            <Typography variant="body1" color="primary">
+                                            <Typography sx={{ mt: 5 }} variant="h4">37</Typography>
+                                            <Typography sx={{ mt: 2 }} variant="h5" color="black">
                                                 +12% This Month
                                             </Typography>
                                         </Box>
@@ -186,17 +183,15 @@ const Dashboard = () => {
                                     </Box>
                                 </Paper>
                             </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
+                            <Grid item xs={4}>
+                                <Paper elevation={5} sx={{ p: 5, maxWidth: 400, maxHeight: 400, borderRadius: 3 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <Box>
-                                            <Typography variant="h6" gutterBottom>
+                                        <Box sx={{ mr: 1 }}>
+                                            <Typography fontWeight='bold' color='black' variant="h5" gutterBottom>
                                                 Channel
                                             </Typography>
-                                            <Typography variant="h4">
-                                                37
-                                            </Typography>
-                                            <Typography variant="body1" color="primary">
+                                            <Typography sx={{ mt: 5 }} variant="h4">37</Typography>
+                                            <Typography sx={{ mt: 2 }} variant="h5" color="black">
                                                 +12% This Month
                                             </Typography>
                                         </Box>
@@ -204,6 +199,9 @@ const Dashboard = () => {
                                     </Box>
                                 </Paper>
                             </Grid>
+                        </Grid>
+
+
                         {/* </Grid> */}
                     </Grid>
                 </Paper>

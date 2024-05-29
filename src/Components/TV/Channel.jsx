@@ -135,33 +135,33 @@ const Channel = () => {
                     </Box>
                 </Box>
                 <Paper elevation={3} sx={{ p: 3, mt: 3, flexGrow: 1, overflowY: 'auto', ml: 3, mr: 3, mb: 2 }}>
-                    <Grid container direction="column" spacing={2} mt={-1}>
+                    <Grid container direction="column" spacing={2} mt={-1} mr={-100}>
                         <Grid item container justifyContent="space-between" alignItems="center">
-                            <Button startIcon={<SearchIcon />} variant="outlined" sx={{ ml:6, width: '1000px', textTransform:'none' }}>
+                            <Button startIcon={<SearchIcon />} variant="outlined" sx={{ ml: 6, textTransform: 'none', alignItems: 'flex-start',  paddingRight: '1000px'}}>
                                 Search
                             </Button>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
+                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 3, textTransform: 'none' }}>
                                     Export
                                 </Button>
-                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
+                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 3, textTransform: 'none' }}>
                                     Add Filter
                                 </Button>
-                                <Button  variant="contained" fontSize= '2rem' color="primary" sx={{ mr: 5, textTransform:'none' }}onClick={handleOpen}>
+                                <Button variant="contained" fontSize='2rem' color="primary" sx={{ mr: 4.5, textTransform: 'none' }} onClick={handleOpen}>
                                     Add Channel
                                 </Button>
                             </Box>
                         </Grid>
-                        <Grid item>
-                            <Divider />
+                        <Grid item mt={1.5} ml={5} mr={4} >
+                            <Divider sx={{ width: '99%', mx: 'auto' }} />
                         </Grid>
                         <Grid item container justifyContent="space-between">
                             <Typography variant="h6">Title</Typography>
                             <Typography variant="h6">Status</Typography>
                             <Typography variant="h6">Action</Typography>
                         </Grid>
-                        <Grid item>
-                            <Divider />
+                        <Grid item mt={1.5} ml={5} mr={4} >
+                            <Divider sx={{ width: '99%', mx: 'auto' }} />
                         </Grid>
                         <Grid item container justifyContent="space-between" alignItems="center">
                             <Typography>Game of Thrones</Typography>
