@@ -135,13 +135,13 @@ const Program = () => {
                                 Search
                             </Button>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 3, textTransform:'none' }}>
+                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
                                     Export
                                 </Button>
-                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 3, textTransform:'none' }}>
+                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
                                     Add Filter
                                 </Button>
-                                <Button  variant="contained" sx={{ mr: 4,  textTransform:'none' }} color="primary" onClick={handleOpen}>
+                                <Button  variant="contained" sx={{ mr: 5,  textTransform:'none' }} color="primary" onClick={handleOpen}>
                                     Add Program
                                 </Button>
                             </Box>

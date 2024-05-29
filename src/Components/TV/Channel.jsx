@@ -141,13 +141,13 @@ const Channel = () => {
                                 Search
                             </Button>
                             <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 3, textTransform:'none' }}>
+                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
                                     Export
                                 </Button>
-                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 3, textTransform:'none' }}>
+                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 4, textTransform:'none' }}>
                                     Add Filter
                                 </Button>
-                                <Button  variant="contained" fontSize= '1rem' color="primary" sx={{ mr: 4, textTransform:'none' }}onClick={handleOpen}>
+                                <Button  variant="contained" fontSize= '2rem' color="primary" sx={{ mr: 5, textTransform:'none' }}onClick={handleOpen}>
                                     Add Channel
                                 </Button>
                             </Box>

@@ -13,6 +13,7 @@ import AddChannel from './Components/TV/AddChannel';
 import AddProgram from './Components/TV/AddProgram';
 import NewChannel from './Components/TV/newchannel';
 import New from './Components/TV/New';
+import DashboardPage from './Components/TV/DashboardPage';
 
 
 
@@ -40,6 +41,7 @@ const App = () => {
           <Route path="/newchannel" element={<NewChannel />} />
           <Route path="/addprogram" element={<AddProgram />} />
           <Route path="/new" element={<New />} />
+          <Route path="/dashboardpage" element={<DashboardPage />} />
         </Routes>
       </Router>
     </ThemeProvider>

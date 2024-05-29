@@ -1,207 +1,213 @@
-import React from 'react';
-import { Box, Grid, Typography, Card, Avatar } from '@mui/material';
+import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ChannelIcon from '@mui/icons-material/VideoLibrary';
-import ProgramIcon from '@mui/icons-material/LiveTv';
-import SearchIcon from '@mui/icons-material/Search'; 
-import SaveAltIcon from '@mui/icons-material/SaveAlt';
-import AddIcon from '@mui/icons-material/Add';
-import CategoryIcon from '@mui/icons-material/Category'; 
+import {
+    Box,
+    Grid,
+    Paper,
+    Typography,
+    Avatar,
+    Button,
+    Container,
+    Divider,
+} from '@mui/material';
+import {
+    Search as SearchIcon,
+    IosShare as ExportIcon,
+    FilterList as FilterListIcon,
+    Add as AddIcon,
+    Group as GroupIcon // Import the icon you're using in the screenshot
+} from '@mui/icons-material';
+import AddChannel from './AddChannel';
 
 const Dashboard = () => {
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
-        <Box bgcolor="neutral.100" p={2}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={2}>
-                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                        <Link to="/">
-                            <Box display="flex" flexDirection="column" alignItems="center">
+        <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
+            <Box sx={{ width: '15%', minWidth: 200, display: 'flex', flexDirection: 'column' }}>
+                <Paper elevation={3} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Box display="flex" alignItems="center" px={2} py={2} boxShadow={3} bgcolor="white">
+                        <Container maxWidth={false} disableGutters>
+                            <Box display="flex" alignItems="center" flexDirection="row" width="100%">
                                 <Avatar
-                                    alt="T-Movie Logo"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/d3312711bf58b75f2c3afe29e2d7305c1eb9e256748b914574f808c5cb851c2b?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
-                                    sx={{ width: 111, height: 111 }}
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/596c9a6460e16fc86f9d6f314fa878465103df347ebdf1e242a4b5f2540ad9d5?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                    sx={{ width: 111, height: 55, mt: { xs: 2, md: 0 } }}
+                                    variant="square"
                                 />
-                                <Typography variant="h4" fontWeight="bold" mt={2}>T-Movie</Typography>
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '2rem' },
+                                        fontWeight: 'bold',
+                                        color: 'rgba(0, 0, 0, 0.8)',
+                                        ml: 2
+                                    }}
+                                >
+                                    T-Movie
+                                </Typography>
                             </Box>
-                        </Link>
-                    </Card>
-
-                    <Card variant="outlined" sx={{ p: 2, mb: 2, backgroundColor: 'indigo.950' }}>
-                        <Link to="/">
-                            <Box display="flex" alignItems="center" justifyContent="center" color="white">
-                                <DashboardIcon fontSize="large" />
-                                <Typography variant="h4" fontWeight="bold" ml={1}>Dashboard</Typography>
-                            </Box>
-                        </Link>
-                    </Card>
-
-                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                        <Link to="/channel">
-                            <Box display="flex" alignItems="center" justifyContent="center">
-                                <ChannelIcon fontSize="large" />
-                                <Typography variant="h4" fontWeight="bold" ml={1}>Channel</Typography>
-                            </Box>
-                        </Link>
-                    </Card>
-
-                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                        <Link to="/program">
-                            <Box display="flex" alignItems="center" justifyContent="center">
-                                <ProgramIcon fontSize="large" />
-                                <Typography variant="h4" fontWeight="bold" ml={1}>Program</Typography>
-                            </Box>
-                        </Link>
-                    </Card>
-                </Grid>
-
-                <Grid item xs={12} md={10}>
-                    <Card variant="outlined" sx={{ p: 2, mb: 2, backgroundColor: 'slate.950' }}>
-                        <Box display="flex" justifyContent="space-between" alignItems="center" color="white">
-                            <Typography variant="h4" fontWeight="bold">Dashboard</Typography>
-                            <Box display="flex" alignItems="center">
-                                <Avatar
-                                    alt="User Avatar"
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/cb194586129aa8468fa164f35030b78430171bf107bdd3c47064962dff8e575e?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
-                                    sx={{ width: 46, height: 46, mr: 2 }}
-                                />
-                                <Link to ="/logout" >
-                                <Avatar sx={{ bgcolor: 'zinc.300', width: 50, height: 50 }} />
-                                </Link>
-                            </Box>
+                        </Container>
+                    </Box>
+                    <Box display="flex" flexDirection="column" alignItems="start" sx={{ mt: 2, pl: 2 }}>
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/4dc2a6dc8993a88d1b6423c1ed2682525a715c81df6b3277b10588926fb3cd56?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 53, height: 53 }}
+                                variant="square"
+                            />
+                            <Link to="/dashboard">
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '1.5rem' },
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    Dashboard
+                                </Typography>
+                            </Link>
                         </Box>
-                    </Card>
 
-                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={8}>
-                                <Box display="flex" alignItems="center" bgcolor="gray.200" p={2}>
-                                    <SearchIcon fontSize="large" />
-                                    <Typography variant="h5" ml={2}>Search</Typography>
-                                </Box>
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/ea50eccf65544b63eae86b62c5ae2ed1b7275ac079cd76b64ea4a145fd364711?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 53, height: 53 }}
+                                variant="square"
+                            />
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    fontSize: { xs: '1rem', md: '1.5rem' },
+                                    fontWeight: 'bold',
+                                    color: 'black'
+                                }}
+                            >
+                                Channel
+                            </Typography>
+                        </Box>
+
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/f8fdbbc6e2390920e44261859c65ccab30a7cf49eee7e7a5622d51b3fbaff32b?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 53, height: 53 }}
+                                variant="square"
+                            />
+                            <Link to="/program">
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '1.5rem' },
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    Program
+                                </Typography>
+                            </Link>
+                        </Box>
+
+                    </Box>
+                </Paper>
+            </Box>
+            <Box sx={{ flexGrow: 2, display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'grey.900', p: 2.3 }}>
+                    <Typography variant="h4" sx={{ ml: 7, color: 'white' }}>
+                        Dashboard
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                            sx={{ width: 46, height: 46 }}
+                        />
+                        <Link to="/logout">
+                            <Avatar sx={{ width: 50, height: 50, bgcolor: 'grey.300', ml: 2 }} />
+                        </Link>
+                    </Box>
+                </Box>
+                <Paper elevation={3} sx={{ p: 3, mt: 3, flexGrow: 1, overflowY: 'auto', ml: 3, mr: 3, mb: 2 }}>
+                    <Grid container direction="column" spacing={2} mt={-1} mr={-100}>
+                        <Grid item container justifyContent="space-between" alignItems="center">
+                            <Button startIcon={<SearchIcon />} variant="outlined" sx={{ ml: 6, width: '1000px', textTransform: 'none' }}>
+                                Search
+                            </Button>
+                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Button startIcon={<ExportIcon />} variant="text" sx={{ mr: 3, textTransform: 'none' }}>
+                                    Export
+                                </Button>
+                                <Button startIcon={<FilterListIcon />} variant="text" sx={{ mr: 3, textTransform: 'none' }}>
+                                    Add Filter
+                                </Button>
+                                <Button variant="contained" fontSize='2rem' color="primary" sx={{ mr: 4, textTransform: 'none' }} onClick={handleOpen}>
+                                    Add Channel
+                                </Button>
+                            </Box>
+                        </Grid>
+                        <Grid item>
+                            <Divider sx={{ width: '20%', mx: 'auto' }} />
+                        </Grid>
+                        {/* <Grid item container spacing={2} sx={{ ml: 1, mt: 2 }}> */}
+                            <Grid item xs={12} md={4}>
+                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
+                                    <Box sx={{ display: 'flex',  alignItems: 'center' }}>
+                                        <Box>
+                                            <Typography variant="h6" gutterBottom>
+                                                System User
+                                            </Typography>
+                                            <Typography variant="h4">
+                                                37
+                                            </Typography>
+                                            <Typography variant="body1" color="primary">
+                                                +12% This Month
+                                            </Typography>
+                                        </Box>
+                                        <GroupIcon sx={{ fontSize: 40, color: 'primary.main', ml: 2 }} />
+                                    </Box>
+                                </Paper>
                             </Grid>
                             <Grid item xs={12} md={4}>
-                                <Box display="flex" alignItems="center" justifyContent="space-between">
-                                    <Box display="flex" alignItems="center" color="indigo.950">
-                                        <SaveAltIcon fontSize="large" />
-                                        <Typography variant="h5" ml={1}>Export</Typography>
+                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
+                                    <Box sx={{ display: 'flex',  alignItems: 'center' }}>
+                                        <Box>
+                                            <Typography variant="h6" gutterBottom>
+                                                Program
+                                            </Typography>
+                                            <Typography variant="h4">
+                                                37
+                                            </Typography>
+                                            <Typography variant="body1" color="primary">
+                                                +12% This Month
+                                            </Typography>
+                                        </Box>
+                                        <GroupIcon sx={{ fontSize: 40, color: 'primary.main', ml: 2 }} />
                                     </Box>
-                                    <Box display="flex" alignItems="center" color="indigo.950">
-                                        <AddIcon fontSize="large" />
-                                        <Typography variant="h5" ml={1}>Add Filter</Typography>
+                                </Paper>
+                            </Grid>
+                            <Grid item xs={12} md={4}>
+                                <Paper elevation={3} sx={{ width: 250, height: 150, p: 2 }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <Box>
+                                            <Typography variant="h6" gutterBottom>
+                                                Channel
+                                            </Typography>
+                                            <Typography variant="h4">
+                                                37
+                                            </Typography>
+                                            <Typography variant="body1" color="primary">
+                                                +12% This Month
+                                            </Typography>
+                                        </Box>
+                                        <GroupIcon sx={{ fontSize: 40, color: 'primary.main', ml: 2 }} />
                                     </Box>
-                                </Box>
+                                </Paper>
                             </Grid>
-                        </Grid>
-                    </Card>
-
-                    <Box my={2}>
-                        <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={4}>
-                                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                        <Typography variant="h5" fontWeight="bold">System User</Typography>
-                                        <Typography variant="h3" color="indigo.950" mt={4}>37</Typography>
-                                        <Typography variant="h5" mt={2}>
-                                            <span style={{ color: 'indigo.950' }}>+12%</span> This Month
-                                        </Typography>
-                                        <Box mt={4} display="flex" justifyContent="center">
-                                            <Avatar sx={{ bgcolor: 'indigo.950', width: 93, height: 93 }} />
-                                        </Box>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                        <Typography variant="h5" fontWeight="bold">Program</Typography>
-                                        <Typography variant="h3" color="indigo.950" mt={4}>37</Typography>
-                                        <Typography variant="h5" mt={2}>
-                                            <span style={{ color: 'indigo.950' }}>+12%</span> This Month
-                                        </Typography>
-                                        <Box mt={4} display="flex" justifyContent="center">
-                                            <Avatar sx={{ bgcolor: 'indigo.950', width: 93, height: 93 }} />
-                                        </Box>
-                                    </Card>
-                                </Grid>
-                                <Grid item xs={12} md={4}>
-                                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                                        <Typography variant="h5" fontWeight="bold">Channel</Typography>
-                                        <Typography variant="h3" color="indigo.950" mt={4}>37</Typography>
-                                        <Typography variant="h5" mt={2}>
-                                            <span style={{ color: 'indigo.950' }}>+12%</span> This Month
-                                        </Typography>
-                                        <Box mt={4} display="flex" justifyContent="center">
-                                            <Avatar sx={{ bgcolor: 'indigo.950', width: 93, height: 93 }} />
-                                        </Box>
-                                    </Card>
-                                </Grid>
-                            </Grid>
-                        </Card>
-                    </Box>
-
-                    <Card variant="outlined" sx={{ p: 2, mb: 2 }}>
-                        <Typography variant="h4" fontWeight="bold" bgcolor="black" color="white" p={2} textAlign="right" borderRadius={2}>
-                            Program on Category
-                        </Typography>
-                        <Grid container spacing={2} mt={2}>
-                            <Grid item xs={12} md={6}>
-                                <img
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/fe4aa281908a71af5b9e63374c34a1bf687e09c58173349e70c588deba1c1276?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
-                                    alt="Category"
-                                    style={{ width: '100%', borderRadius: '8px' }}
-                                />
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <Typography variant="h5" fontWeight="bold">
-                                    <CategoryIcon sx={{ color: 'fuchsia.700', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'pink.600', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'green.800', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'orange.400', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'red.500', mr: 2 }} />
-                                    Name
-                                </Typography>
-                            </Grid>
-                            <Grid item xs={12} md={3}>
-                                <Typography variant="h5" fontWeight="bold">
-                                    <CategoryIcon sx={{ color: 'yellow.500', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'amber.600', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'teal.400', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'emerald.600', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'blue.800', mr: 2 }} />
-                                    Name
-                                </Typography>
-                                <Typography variant="h5" fontWeight="bold" mt={4}>
-                                    <CategoryIcon sx={{ color: 'violet.500', mr: 2 }} />
-                                    Name
-                                </Typography>
-                            </Grid>
-                        </Grid>
-                    </Card>
-                </Grid>
-            </Grid>
+                        {/* </Grid> */}
+                    </Grid>
+                </Paper>
+            </Box>
         </Box>
     );
 };
