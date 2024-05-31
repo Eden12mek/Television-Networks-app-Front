@@ -109,6 +109,16 @@ const AddProgram = ({ open, handleClose }) => {
                 width: '100px',
                 textTransform: 'capitalize',
                 fontSize: '1rem',
+                fontWeight: 'bold',
+                borderColor: 'black',
+                color: 'black',
+                '&:hover': {
+                    color: "#000000",
+                },
+                '&:hover': {
+                    
+                    borderColor: "#000000"
+                },
               }}
             >
               Cancel
@@ -118,6 +128,7 @@ const AddProgram = ({ open, handleClose }) => {
                color="secondary"
                sx={{
                    variant: "h2",
+                   width: '100px',
                    textTransform: 'none',
                    backgroundColor: "#0b0b3b",
                    fontSize: '1.2rem',

@@ -43,7 +43,7 @@ const AddChannel = ({ open, handleClose  }) => {
         right="0"
         bottom="0"
         bgcolor="rgba(0, 0, 0, 0.5)"
-        zIndex={1300} // Ensure it overlays all other elements
+        zIndex={1300} 
       >
         <Box
           bgcolor="white"
@@ -66,18 +66,24 @@ const AddChannel = ({ open, handleClose  }) => {
               margin="normal"
             />
           </Box>
-          <Box display="flex" justifyContent="flex-end" mt={7}>
+          <Box  display="flex" justifyContent="flex-end" mt={7} >
             <Button
               variant="outlined"
               color="secondary"
               onClick={handleClose}
               sx={{
-                mr: 2,
+                mr: 5,
                 variant: "h2",
                 width: '100px',
                 textTransform: 'capitalize',
                 fontSize: '1rem',
-                fontWeight: 'bold'
+                fontWeight: 'bold',
+                borderColor: 'black',
+                color: 'black',
+                '&:hover': {
+                    
+                    borderColor: "black"
+                },
               }}
            
             >
@@ -88,6 +94,7 @@ const AddChannel = ({ open, handleClose  }) => {
                color="secondary"
                sx={{
                    variant: "h2",
+                   width: '100px',
                    textTransform: 'none',
                    backgroundColor: "#0b0b3b",
                    fontSize: '1.2rem',

@@ -193,6 +193,7 @@ const Channel = () => {
                                     <IconButton>
                                         <DeleteIcon />
                                     </IconButton>
+                                    
                                 </Box>
                             </Grid>
                         </Box>

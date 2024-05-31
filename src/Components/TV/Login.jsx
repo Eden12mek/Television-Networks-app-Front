@@ -2,6 +2,8 @@ import React from 'react';
 import { Box, Typography, TextField, Button, Grid, InputAdornment } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
+import { Link } from 'react-router-dom';
+
 
 const Login = () => {
     return (
@@ -63,6 +65,7 @@ const Login = () => {
                                 },
                             }}
                         />
+                        <Link to="/dashboard">
                         <Button
                             variant="contained"
                             color="primary"
@@ -70,17 +73,18 @@ const Login = () => {
                                 mt: 4,
                                 py: 2,
                                 fontSize: '1.25rem',
-                                bgcolor: 'black',
+                                bgcolor: '#030327',
                                 textTransform: 'capitalize',
                                 borderRadius: '10px',
                                 '&:hover': {
-                                    bgcolor: 'black',
+                                    bgcolor: '#030327',
                                 },
                             }}
                             fullWidth
                         >
                             Login
                         </Button>
+                        </Link>
                     </Box>
                 </Grid>
             </Grid>
