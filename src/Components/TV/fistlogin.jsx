@@ -1,6 +1,6 @@
 import React from 'react'
 
-const fistlogin = () => {
+const Fistlogin = () => {
     return (
         <div className="justify-center bg-white">
           <div className="flex gap-5 max-md:flex-col max-md:gap-0">
@@ -42,4 +42,4 @@ const fistlogin = () => {
       )
 }
 
-export default fistlogin
+export default Fistlogin;

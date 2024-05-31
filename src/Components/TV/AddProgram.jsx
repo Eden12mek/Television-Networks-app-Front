@@ -101,36 +101,29 @@ const AddProgram = ({ open, handleClose }) => {
           >
             <Button
               variant="outlined"
-              color="primary"
-              fullWidth
+              color="secondary"
               onClick={handleClose}
               sx={{
-                p: 2,
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                fontWeight: 'bold',
-                borderWidth: 2,
-                borderColor: 'black',
-                color: 'black',
-                mb: { xs: 2, md: 0 },
-                textTransform: 'capitalize', 
+                mr: 2,
+                variant: "h2",
+                width: '100px',
+                textTransform: 'capitalize',
                 fontSize: '1rem',
               }}
             >
               Cancel
             </Button>
             <Button
-              variant="contained"
-              color="primary"
-              fullWidth
-              sx={{
-                p: 2,
-                fontSize: { xs: '0.875rem', md: '1rem' },
-                fontWeight: 'bold',
-                bgcolor: 'indigo.950',
-                borderWidth: 2,
-                borderColor: 'indigo.950',
-                textTransform: 'capitalize', 
-                fontSize: '1rem',
+               variant="contained"
+               color="secondary"
+               sx={{
+                   variant: "h2",
+                   textTransform: 'none',
+                   backgroundColor: "#0b0b3b",
+                   fontSize: '1.2rem',
+                   '&:hover': {
+                       backgroundColor: "#0b0b3b",
+                   },
               }}
             >
               Add

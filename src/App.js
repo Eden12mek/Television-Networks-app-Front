@@ -11,9 +11,10 @@ import Program from './Components/TV/Program';
 import Logout from './Components/TV/Logout';
 import AddChannel from './Components/TV/AddChannel';
 import AddProgram from './Components/TV/AddProgram';
-import NewChannel from './Components/TV/newchannel';
+import NewChannel from './Components/TV/Newchannel';
 import New from './Components/TV/New';
 import DashboardPage from './Components/TV/DashboardPage';
+import AddchanName from './Components/TV/AddchanName';
 
 
 
@@ -43,6 +44,11 @@ const App = () => {
           <Route path="/new" element={<New />} />
           <Route path="/dashboardpage" element={<DashboardPage />} />
           <Route path="/sidebar" element={<Sidebar />} />
+          {/* <Route path="/timg" element={<Timg />} />
+          <Route path="/fistlogin" element={<Fistlogin />} />
+          <Route path="/combine" element={<Combine />} />
+          <Route path="/boxoflogin" element={<Boxoflogin />} />
+          <Route path="/addchan" element={<AddchanName />} /> */}
         </Routes>
       </Router>
     </ThemeProvider>

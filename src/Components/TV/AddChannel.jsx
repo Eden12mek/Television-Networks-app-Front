@@ -69,24 +69,31 @@ const AddChannel = ({ open, handleClose  }) => {
           <Box display="flex" justifyContent="flex-end" mt={7}>
             <Button
               variant="outlined"
-              color="primary"
+              color="secondary"
+              onClick={handleClose}
               sx={{
                 mr: 2,
+                variant: "h2",
                 width: '100px',
                 textTransform: 'capitalize',
                 fontSize: '1rem',
+                fontWeight: 'bold'
               }}
-            //   onClick={onClose}
+           
             >
               Cancel
             </Button>
             <Button
-              variant="contained"
-              color="primary"
-              sx={{
-                width: '100px',
-                textTransform: 'capitalize',
-                fontSize: '1rem',
+               variant="contained"
+               color="secondary"
+               sx={{
+                   variant: "h2",
+                   textTransform: 'none',
+                   backgroundColor: "#0b0b3b",
+                   fontSize: '1.2rem',
+                   '&:hover': {
+                       backgroundColor: "#0b0b3b",
+                   },
               }}
             >
               Add

@@ -22,6 +22,7 @@ import {
     Delete as DeleteIcon
 } from '@mui/icons-material';
 import AddChannel from './AddChannel';
+import AddProgram from './AddProgram';
 
 const DashboardPage = () => {
     const [open, setOpen] = useState(false);
@@ -82,6 +83,7 @@ const DashboardPage = () => {
                                 sx={{ width: 53, height: 53 }}
                                 variant="square"
                             />
+                            <Link to="/channel">
                             <Typography
                                 variant="h5"
                                 sx={{
@@ -92,6 +94,7 @@ const DashboardPage = () => {
                             >
                                 Channel
                             </Typography>
+                            </Link>
                         </Box>
 
                         <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
@@ -100,7 +103,7 @@ const DashboardPage = () => {
                                 sx={{ width: 53, height: 53 }}
                                 variant="square"
                             />
-                            <Link to="/program">
+                            
                                 <Typography
                                     variant="h5"
                                     sx={{
@@ -111,16 +114,16 @@ const DashboardPage = () => {
                                 >
                                     Program
                                 </Typography>
-                            </Link>
+                            
                         </Box>
 
                     </Box>
                 </Paper>
             </Box>
             <Box sx={{ flexGrow: 2, display: 'flex', flexDirection: 'column' }}>
-                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'grey.900', p: 2.4 }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: '#050720', p: 2.4 }}>
                     <Typography variant="h4" sx={{ ml: 7, color: 'white' }}>
-                        Dashboard
+                        Program
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center' }}>
                         <Avatar
@@ -137,10 +140,10 @@ const DashboardPage = () => {
                     <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
                         <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
                             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
-                                <Box width={970} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
+                                <Box width={960} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
                                     <Box display="flex" gap={1} justifyContent="space-between">
                                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
-                                        <Typography>Search</Typography>
+                                        <Typography variant='h6'>Search</Typography>
                                     </Box>
                                 </Box>
                                 <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" gap={4} mr={-7} ml={9.95}>
@@ -152,18 +155,29 @@ const DashboardPage = () => {
                                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/aaa9dba43b2f1a27abe4d3484ab98ec9bf6597ee344765d7e43eeab1f6334b69?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Add Filter Icon" style={{ width: 32 }} />
                                         <Typography>Add Filter</Typography>
                                     </Box>
-                                    <Button variant="contained" color="primary">Add Channel</Button>
+                                    <Button variant="contained" color="primary"sx={{  textTransform: 'none' }} onClick={handleOpen}>Add Program</Button>
                                 </Box>
                             </Box>
-                            <Divider sx={{ mt: 2, mb:3, mx: 1 }} />
-                            <Grid item container justifyContent="space-between" ml={1.5}>
-                                <Typography variant="h6">Name</Typography>
+                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml:2 }} />
+                            <Grid item container justifyContent="space-between" ml={4} >
+
+                                <Typography variant="h6">Id</Typography>
+                                <Typography variant="h6">Title</Typography>
+                                <Typography variant="h6">Duration</Typography>
+                                <Typography variant="h6">Description</Typography>
                                 <Typography variant="h6">Status</Typography>
                                 <Typography variant="h6">Action</Typography>
                             </Grid>
-                            <Divider sx={{ mt: 3, mb:4, mx: 1 }} />
-                            <Grid item container justifyContent="space-between" alignItems="center" ml={1.5}>
-                                <Typography variant="h5"> Game of Thrones</Typography>
+                            <Divider sx={{ mt: 3, mb: 4, mx: 1, ml:2 }} />
+                            <Grid item container justifyContent="space-between" alignItems="center" ml={4} >
+                                <Typography>1</Typography>
+                                <Typography>Game of Thrones</Typography>
+                                <Typography>2h</Typography>
+                                <Typography>
+                                    Medieval Movie
+                                    <br />
+                                    Series
+                                </Typography>
                                 <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'green.100', p: 1, borderRadius: 1, mr: 2 }}>
                                         <DoneIcon color="success" />
@@ -185,9 +199,11 @@ const DashboardPage = () => {
                     {/* </Box> */}
                 </Paper>
             </Box>
+            <AddProgram open={open} handleClose={handleClose} />
         </Box>
     );
 };
+
 
 
 

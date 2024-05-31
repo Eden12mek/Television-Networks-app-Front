@@ -1,6 +1,6 @@
 import React from 'react'
 
-const boxoflogin = () => {
+const Boxoflogin = () => {
     return (
         <div className="flex flex-col px-9 py-20 text-3xl font-bold leading-5 bg-white max-w-[780px] text-zinc-600 max-md:px-5">
           <div className="self-center mt-32 text-7xl text-center text-black max-md:mt-10 max-md:text-4xl">
@@ -29,4 +29,4 @@ const boxoflogin = () => {
       )
 }
 
-export default boxoflogin
+export default Boxoflogin;
