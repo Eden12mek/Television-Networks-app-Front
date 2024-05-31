@@ -1,170 +1,194 @@
-import React from 'react';
-import { Box, Typography, Grid, Avatar, Button, Divider } from '@mui/material';
+import React, { useState } from 'react';
+import { Link } from 'react-router-dom';
+import {
+    Box,
+    Grid,
+    Paper,
+    Typography,
+    Avatar,
+    Button,
+    IconButton,
+    Container,
+    Divider,
+} from '@mui/material';
+import {
+    Search as SearchIcon,
+    IosShare as ExportIcon,
+    FilterList as FilterListIcon,
+    Group as GroupIcon,
+    Add as AddIcon,
+    Done as DoneIcon,
+    Edit as EditIcon,
+    Delete as DeleteIcon
+} from '@mui/icons-material';
+import AddChannel from './AddChannel';
 
 const DashboardPage = () => {
+    const [open, setOpen] = useState(false);
+
+    const handleOpen = () => setOpen(true);
+    const handleClose = () => setOpen(false);
+
     return (
-        <Box sx={{ bgcolor: 'neutral.100', minHeight: '100vh', p: 2 }}>
-            <Grid container spacing={2}>
-                <Grid item xs={12} md={3}>
-                    <Box sx={{ display: 'flex', flexDirection: 'column', height: '100%' }}>
-                        <Box sx={{ bgcolor: 'white', boxShadow: 1, p: 3, mb: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                                <Avatar 
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/3690cd15fb5f0bca8291537454271a4fcb9d3d7c7e4e46f15173a1604d049f59?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                    sx={{ width: 111, height: 111, mr: 2 }}
+        <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
+            <Box sx={{ width: '15%', minWidth: 300, display: 'flex', flexDirection: 'column' }}>
+                <Paper elevation={3} sx={{ flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+                    <Box display="flex" alignItems="center" px={2} py={1.24} boxShadow={3} bgcolor="white">
+                        <Container maxWidth={false} disableGutters>
+                            <Box display="flex" alignItems="center" flexDirection="row" px={{ xs: 3, md: 3 }} width="100%">
+                                <Avatar
+                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/596c9a6460e16fc86f9d6f314fa878465103df347ebdf1e242a4b5f2540ad9d5?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                    sx={{ width: 59, height: 59, ml: 2, mt: { xs: 4, md: 0 } }}
+                                    alt="T-Movie"
                                 />
-                                <Typography variant="h3" component="div">
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '2rem' },
+                                        fontWeight: 'bold',
+                                        color: 'rgba(0, 0, 0, 0.8)',
+                                        ml: 2
+                                    }}
+                                >
                                     T-Movie
                                 </Typography>
                             </Box>
+                        </Container>
+                    </Box>
+                    <Box display="flex" flexDirection="column" alignItems="start" sx={{ mt: 2, pl: 2 }}>
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/4a8ae3cc68487a297b90fda6c7bfb0818d5d03bf64046314c05474171b8dd03b?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 23, height: 23 }}
+                                alt="Dashboard"
+                            />
+                            <Link to="/dashboard">
+                                <Typography
+                                    variant="h4"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '1.5rem' },
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    Dashboard
+                                </Typography>
+                            </Link>
                         </Box>
-                        <Button fullWidth variant="contained" color="primary" sx={{ py: 2, mb: 2 }}>
-                            <Avatar 
-                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/aa5cab5be2fe54aa340eceeeb2f6699acff7831cd1a062fd08906760621e0006?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                sx={{ width: 53, height: 53, mr: 2 }}
+
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/ea50eccf65544b63eae86b62c5ae2ed1b7275ac079cd76b64ea4a145fd364711?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 53, height: 53 }}
+                                variant="square"
                             />
-                            <Typography variant="h4">
-                                Dashboard
-                            </Typography>
-                        </Button>
-                        <Button fullWidth variant="outlined" sx={{ py: 2, mb: 2 }}>
-                            <Avatar 
-                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/8e87dc3bc13537db0c076d79b861ce11e7790e37752b0a405f30eaf37818f674?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                sx={{ width: 53, height: 53, mr: 2 }}
-                            />
-                            <Typography variant="h4">
+                            <Typography
+                                variant="h5"
+                                sx={{
+                                    fontSize: { xs: '1rem', md: '1.5rem' },
+                                    fontWeight: 'bold',
+                                    color: 'black'
+                                }}
+                            >
                                 Channel
                             </Typography>
-                        </Button>
-                        <Button fullWidth variant="outlined" sx={{ py: 2, mb: 2 }}>
-                            <Avatar 
-                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/97e034d4a791a2061d422665337cdb3f46a9e48752748a479231c2781f1efeec?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                sx={{ width: 53, height: 53, mr: 2 }}
+                        </Box>
+
+                        <Box display="flex" alignItems="center" gap={2} sx={{ mt: 2 }}>
+                            <Avatar
+                                src="https://cdn.builder.io/api/v1/image/assets/TEMP/f8fdbbc6e2390920e44261859c65ccab30a7cf49eee7e7a5622d51b3fbaff32b?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                                sx={{ width: 53, height: 53 }}
+                                variant="square"
                             />
-                            <Typography variant="h4">
-                                Program
-                            </Typography>
-                        </Button>
+                            <Link to="/program">
+                                <Typography
+                                    variant="h5"
+                                    sx={{
+                                        fontSize: { xs: '1rem', md: '1.5rem' },
+                                        fontWeight: 'bold',
+                                        color: 'black'
+                                    }}
+                                >
+                                    Program
+                                </Typography>
+                            </Link>
+                        </Box>
+
                     </Box>
-                </Grid>
-                <Grid item xs={12} md={9}>
-                    <Box sx={{ bgcolor: 'white', boxShadow: 1, p: 3 }}>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                            <Typography variant="h3" component="div" color="white">
-                                Dashboard
-                            </Typography>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Avatar 
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/e13e89f1c434d6e7d3778aea30d08e6725f1f74d9efe32f468077f20d5860b78?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                    sx={{ width: 46, height: 46, mr: 2 }}
-                                />
-                                <Avatar sx={{ width: 50, height: 50, bgcolor: 'zinc.300' }} />
-                            </Box>
-                        </Box>
-                        <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 2 }}>
-                            <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'gray.200', p: 2, borderRadius: 1 }}>
-                                <Avatar 
-                                    src="https://cdn.builder.io/api/v1/image/assets/TEMP/5bf1b3bee6ed798f71031a6c1456c88710e3e5521c6d4e987b399d2fa85e38d5?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                    sx={{ width: 50, height: 50, mr: 2 }}
-                                />
-                                <Typography variant="h5">Search</Typography>
-                            </Box>
-                            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                <Button variant="text" color="primary">
-                                    <Avatar 
-                                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/a672e37986b085d54583428fcf4289be3f38c2a5b10ba1db1360797ae2909280?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                        sx={{ width: 42, height: 42, mr: 2 }}
-                                    />
-                                    Export
-                                </Button>
-                                <Button variant="text" color="primary">
-                                    <Avatar 
-                                        src="https://cdn.builder.io/api/v1/image/assets/TEMP/7a8f352957664f5c54d0f94dc16f9ac13d454dc0647be8d49a8eb276aa21207e?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" 
-                                        sx={{ width: 50, height: 50, mr: 2 }}
-                                    />
-                                    Add Filter
-                                </Button>
-                                <Button variant="contained" color="primary">
-                                    Add Filter
-                                </Button>
-                            </Box>
-                        </Box>
-                        <Divider sx={{ my: 4 }} />
-                        <Grid container spacing={2}>
-                            <Grid item xs={12} md={4}>
-                                <Box sx={{ p: 3, bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                                    <Typography variant="h4" gutterBottom>
-                                        System User
-                                    </Typography>
-                                    <Typography variant="h3">
-                                        37
-                                    </Typography>
-                                    <Typography variant="body1" color="primary">
-                                        +12% This Month
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Box sx={{ p: 3, bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                                    <Typography variant="h4" gutterBottom>
-                                        Program
-                                    </Typography>
-                                    <Typography variant="h3">
-                                        37
-                                    </Typography>
-                                    <Typography variant="body1" color="primary">
-                                        +12% This Month
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                            <Grid item xs={12} md={4}>
-                                <Box sx={{ p: 3, bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                                    <Typography variant="h4" gutterBottom>
-                                        Channel
-                                    </Typography>
-                                    <Typography variant="h3">
-                                        37
-                                    </Typography>
-                                    <Typography variant="body1" color="primary">
-                                        +12% This Month
-                                    </Typography>
-                                </Box>
-                            </Grid>
-                        </Grid>
-                        <Divider sx={{ my: 4 }} />
-                        <Box sx={{ p: 3, bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                            <Typography variant="h4" gutterBottom>
-                                Program on Category
-                            </Typography>
-                            <Grid container spacing={2}>
-                                <Grid item xs={12} md={6}>
-                                    <Box sx={{ bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                                        <img
-                                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/fe4aa281908a71af5b9e63374c34a1bf687e09c58173349e70c588deba1c1276?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
-                                            alt="Chart"
-                                            style={{ width: '100%', borderRadius: 8 }}
-                                        />
+                </Paper>
+            </Box>
+            <Box sx={{ flexGrow: 2, display: 'flex', flexDirection: 'column' }}>
+                <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', bgcolor: 'grey.900', p: 2.4 }}>
+                    <Typography variant="h4" sx={{ ml: 7, color: 'white' }}>
+                        Dashboard
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                        <Avatar
+                            src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
+                            sx={{ width: 40, height: 40 }}
+                        />
+                        <Link to="/logout">
+                            <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
+                        </Link>
+                    </Box>
+                </Box>
+                <Paper elevation={3} sx={{ p: 3, mt: 4, flexGrow: 1, overflowY: 'auto', ml: 4, mr: 3, mb: 2 }}>
+                    {/* <Box display="flex" justifyContent="center" alignItems="center" p={4} bgcolor="white" borderRadius={4} boxShadow={2} maxWidth={{ xs: '100%', md: '2338px' }}> */}
+                    <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
+                        <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
+                            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
+                                <Box width={970} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
+                                    <Box display="flex" gap={1} justifyContent="space-between">
+                                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
+                                        <Typography>Search</Typography>
                                     </Box>
-                                </Grid>
-                                <Grid item xs={12} md={6}>
-                                    <Box sx={{ p: 2, bgcolor: 'white', boxShadow: 1, borderRadius: 2 }}>
-                                        <Typography variant="h5">
-                                            Channel Information
-                                        </Typography>
+                                </Box>
+                                <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" gap={4} mr={-7} ml={9.95}>
+                                    <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+                                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/3bd4d5877d21f194a10f1e9aa0b8166aa78bc71475771154ed4cd4ae89b65dd6?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Export Icon" style={{ width: 32 }} />
+                                        <Typography>Export</Typography>
                                     </Box>
-                                    <Box sx={{ p: 2, bgcolor: 'white', boxShadow: 1, borderRadius: 2, mt: 2 }}>
-                                        <Typography variant="h5">
-                                            Program Information
-                                        </Typography>
+                                    <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
+                                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/aaa9dba43b2f1a27abe4d3484ab98ec9bf6597ee344765d7e43eeab1f6334b69?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Add Filter Icon" style={{ width: 32 }} />
+                                        <Typography>Add Filter</Typography>
                                     </Box>
-                                </Grid>
+                                    <Button variant="contained" color="primary">Add Channel</Button>
+                                </Box>
+                            </Box>
+                            <Divider sx={{ mt: 2, mb:3, mx: 1 }} />
+                            <Grid item container justifyContent="space-between" ml={1.5}>
+                                <Typography variant="h6">Name</Typography>
+                                <Typography variant="h6">Status</Typography>
+                                <Typography variant="h6">Action</Typography>
+                            </Grid>
+                            <Divider sx={{ mt: 3, mb:4, mx: 1 }} />
+                            <Grid item container justifyContent="space-between" alignItems="center" ml={1.5}>
+                                <Typography variant="h5"> Game of Thrones</Typography>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'green.100', p: 1, borderRadius: 1, mr: 2 }}>
+                                        <DoneIcon color="success" />
+                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                    </Box>
+                                    <Avatar sx={{ bgcolor: 'green.800', width: 65, height: 65 }} />
+                                </Box>
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <IconButton>
+                                        <EditIcon />
+                                    </IconButton>
+                                    <IconButton>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                </Box>
                             </Grid>
                         </Box>
                     </Box>
-                </Grid>
-            </Grid>
+                    {/* </Box> */}
+                </Paper>
+            </Box>
         </Box>
     );
 };
+
+
 
 export default DashboardPage;

@@ -62,7 +62,7 @@ const Channel = () => {
                                 sx={{ width: 53, height: 53 }}
                                 variant="square"
                             />
-                            <Link to = "/dashboard">
+                            <Link to = "/logout">
                             <Typography
                                 variant="h5"
                                 sx={{

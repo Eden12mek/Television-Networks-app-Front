@@ -42,6 +42,7 @@ const App = () => {
           <Route path="/addprogram" element={<AddProgram />} />
           <Route path="/new" element={<New />} />
           <Route path="/dashboardpage" element={<DashboardPage />} />
+          <Route path="/sidebar" element={<Sidebar />} />
         </Routes>
       </Router>
     </ThemeProvider>
