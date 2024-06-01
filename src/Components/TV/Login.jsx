@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid, InputAdornment } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, InputAdornment, Link } from '@mui/material';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
@@ -28,15 +28,17 @@ const Login = () => {
             display="flex"
             justifyContent="center"
             alignItems="center"
-            minHeight="100vh"
+            minHeight="90vh"
             bgcolor="black"
-            p={2}
+            p={6.05}
         >
             <Box
                 display="flex"
                 justifyContent="center"
-                bgcolor="black"
-                p={2}
+                bgcolor="white"
+                p={20}
+                mt={-13}
+                
                 width={{ xs: '90%', sm: '70%', md: '50%', lg: '40%' }}
             >
                 <Grid container spacing={5} direction={{ xs: 'column', md: 'row' }}>
@@ -50,7 +52,7 @@ const Login = () => {
                     </Grid>
                     <Grid item xs={12} md={6}>
                         <Box display="flex" flexDirection="column" px={{ xs: 2, md: 3 }} py={{ xs: 5, md: 8 }} textAlign="center">
-                            <Typography variant="h2" component="div" sx={{ mt: { xs: 2, md: 8 }, mb: { xs: 1, md: 5 } }} color="white">
+                            <Typography variant="h2" component="div" sx={{ mt: { xs: 2, md: 8 }, mb: { xs: 1, md: 5 } }} color="black">
                                 LOGIN
                             </Typography>
                             <TextField
@@ -72,7 +74,7 @@ const Login = () => {
                                         },
                                         '& .MuiInputBase-input': {
                                             fontSize: '1.25rem',
-                                            color: 'white',
+                                            color: 'black',
                                         },
                                     },
                                 }}
@@ -97,7 +99,7 @@ const Login = () => {
                                         },
                                         '& .MuiInputBase-input': {
                                             fontSize: '1.25rem',
-                                            color: 'white',
+                                            color: 'black',
                                         },
                                     },
                                 }}
@@ -121,6 +123,12 @@ const Login = () => {
                             >
                                 Login
                             </Button>
+                            <Typography variant="body2" color="black" sx={{ mt: 2 }}>
+                                Don't have an account?{' '}
+                                <Link href="/register" sx={{ color: '#0b0b3b', textDecoration: 'none' }}>
+                                    Create account
+                                </Link>
+                            </Typography>
                         </Box>
                     </Grid>
                 </Grid>

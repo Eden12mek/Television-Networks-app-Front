@@ -24,7 +24,7 @@ const Register = () => {
     };
 
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="100vh" bgcolor="black" p={2}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh" bgcolor="black" p={6.05}>
             <Box
                 display="flex"
                 justifyContent="center"
@@ -83,6 +83,7 @@ const Register = () => {
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
                                 sx={{ mb: 2 }}
+                                
                             />
                             <Button
                                 variant="contained"
