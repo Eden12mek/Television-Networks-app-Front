@@ -19,7 +19,9 @@ import {
     Add as AddIcon,
     Done as DoneIcon,
     Edit as EditIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
+    Close as CloseIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import AddChannel from './AddChannel';
 
@@ -28,6 +30,11 @@ const Channel = () => {
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const [isActive, setIsActive] = useState(true);
+
+    const handleClick = () => {
+        setIsActive((prevState) => !prevState);
+    };
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -170,30 +177,53 @@ const Channel = () => {
                                     </Button>
                                 </Box>
                             </Box>
-                            <Divider sx={{ mt: 2, mb:3, mx: 1, ml:2, mr:3 }} />
+                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: 3 }} />
                             <Grid item container justifyContent="space-between" ml={3} >
                                 <Typography mr={-27.5} variant="h6">Name</Typography>
-                                <Typography mr={-30}variant="h6">Status</Typography>
-                                <Typography  mr={100} variant="h6">Action</Typography>
+                                <Typography mr={-30} variant="h6">Status</Typography>
+                                <Typography mr={100} variant="h6">Action</Typography>
                             </Grid>
-                            <Divider sx={{ mt: 3, mb:5, mx: 1, ml:2, mr:3 }} />
+                            <Divider sx={{ mt: 3, mb: 5, mx: 1, ml: 2, mr: 3 }} />
                             <Grid item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
-                                <Typography mr={-27.5}variant="h5"> GOT </Typography>
-                                <Box mr={-30} sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'green.100', p: 1, borderRadius: 1, mr: 2 }}>
-                                        <DoneIcon color="success" />
-                                        <Typography  sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                <Typography mr={-27.5} variant="h5"> GOT </Typography>
+                                <Box
+                                    mr={-30}
+                                    sx={{
+                                        display: 'flex',
+                                        alignItems: 'center',
+                                        cursor: 'pointer',
+                                        bgcolor: isActive ? 'green.100' : 'red.100',
+                                        p: 1,
+                                        borderRadius: 1,
+                                        mr: 2,
+                                    }}
+                                    onClick={handleClick}
+                                >
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                        {isActive ? (
+                                            <>
+                                                <DoneIcon color="success" />
+                                                <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <CloseIcon color="error" />
+                                                <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
+                                            </>
+                                        )}
                                     </Box>
-                                    <Avatar sx={{ bgcolor: 'green.800', width: 65, height: 65 }} />
+                                    <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
                                 </Box>
-                                <Box mr={100} sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <IconButton>
+                                        <VisibilityIcon />
+                                    </IconButton>
                                     <IconButton>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton>
+                                    <IconButton sx={{ color: 'red' }}>
                                         <DeleteIcon />
                                     </IconButton>
-                                    
                                 </Box>
                             </Grid>
                         </Box>

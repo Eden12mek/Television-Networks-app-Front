@@ -19,7 +19,8 @@ import {
     Add as AddIcon,
     Done as DoneIcon,
     Edit as EditIcon,
-    Delete as DeleteIcon
+    Delete as DeleteIcon,
+    Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import AddChannel from './AddChannel';
 import AddProgram from './AddProgram';
@@ -186,25 +187,28 @@ const Program = () => {
                             <Divider sx={{ mt: 3, mb: 4, mx: 1, ml: 2, mr:2.5 }} />
                             <Grid item container justifyContent="space-between" alignItems="center" ml={4} >
                                 <Typography>1</Typography>
-                                <Typography ml={-7}>Game of Thrones</Typography>
-                                <Typography>2h</Typography>
-                                <Typography mr={-7}>
+                                <Typography ml={-14}>Game of Thrones</Typography>
+                                <Typography ml={-15}>2h</Typography>
+                                <Typography mr={-18} ml={-5}>
                                     Medieval Movie
                                     <br />
                                     Series
                                 </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box sx={{ display: 'flex', alignItems: 'center', mr:-15 }}>
                                     <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'green.100', p: 1, borderRadius: 1, mr: 2 }}>
                                         <DoneIcon color="success" />
                                         <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
                                     </Box>
                                     <Avatar sx={{ bgcolor: 'green.800', width: 65, height: 65 }} />
                                 </Box>
-                                <Box mr={13} sx={{ display: 'flex', alignItems: 'center' }}>
+                                <Box mr={10} sx={{ display: 'flex', alignItems: 'center' }}>
+                                    <IconButton>
+                                        <VisibilityIcon />
+                                    </IconButton>
                                     <IconButton>
                                         <EditIcon />
                                     </IconButton>
-                                    <IconButton>
+                                    <IconButton sx={{ color: 'red' }}>
                                         <DeleteIcon />
                                     </IconButton>
                                 </Box>

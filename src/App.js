@@ -11,10 +11,13 @@ import Program from './Components/TV/Program';
 import Logout from './Components/TV/Logout';
 import AddChannel from './Components/TV/AddChannel';
 import AddProgram from './Components/TV/AddProgram';
-import NewChannel from './Components/TV/Newchannel';
+import NewChannel from './Components/TV/newchannel';
 import New from './Components/TV/New';
 import DashboardPage from './Components/TV/DashboardPage';
 import AddchanName from './Components/TV/AddchanName';
+import Chanselect from './Components/TV/Chanselect';
+import Fistlogin from './Components/TV/Fistlogin';
+import Register from './Components/TV/Register';
 
 
 
@@ -33,7 +36,8 @@ const App = () => {
     <ThemeProvider theme={theme}> {/* Wrap your Routes with ThemeProvider */}
       <Router>
         <Routes>
-          <Route path="/" element={<Login />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/channel" element={<Channel />} />
           <Route path="/program" element={<Program />} />
@@ -44,8 +48,9 @@ const App = () => {
           <Route path="/new" element={<New />} />
           <Route path="/dashboardpage" element={<DashboardPage />} />
           <Route path="/sidebar" element={<Sidebar />} />
+          <Route path="/chan" element={<Chanselect />} />
+          <Route path="/fist" element={<Fistlogin />} />
           {/* <Route path="/timg" element={<Timg />} />
-          <Route path="/fistlogin" element={<Fistlogin />} />
           <Route path="/combine" element={<Combine />} />
           <Route path="/boxoflogin" element={<Boxoflogin />} />
           <Route path="/addchan" element={<AddchanName />} /> */}

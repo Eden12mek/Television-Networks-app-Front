@@ -51,38 +51,42 @@ const AddChannel = ({ open, handleClose  }) => {
           boxShadow={3}
           p={6}
           width="90%"
-          maxWidth={800}
+          maxWidth={900}
         >
-          <Typography variant="h3" fontWeight="bold" mt={-4} mb={6} textAlign="center">
+          <Typography variant="h3" fontWeight="bold" mt={-4} mb={8} textAlign="center">
             Add Channel
           </Typography>
-          <Box display="flex" flexDirection="column" alignItems="center" mb={2}>
-            <Typography variant="body1" fontWeight="bold" alignSelf="flex-start" sx={{ ml: 27 }}>
+          <Box display="flex" flexDirection="column" alignItems="center" mb={2} mr={11}>
+            <Typography variant="h6" fontSize= '1.5rem'  alignSelf="flex-start" sx={{ ml: 23 }}>
               Name
             </Typography>
             <TextField
               variant="outlined"
-              sx={{ flexGrow: 1, width: '100%' }}
+              sx={{ flexGrow: 1, width: '100%', maxWidth: 450 }}
               margin="normal"
             />
           </Box>
-          <Box  display="flex" justifyContent="flex-end" mt={7} >
+          <Box  display="flex" justifyContent="flex-end" mt={7} mgap={7} >
             <Button
               variant="outlined"
               color="secondary"
               onClick={handleClose}
               sx={{
-                mr: 5,
+                mr: 10,
                 variant: "h2",
-                width: '100px',
-                textTransform: 'capitalize',
-                fontSize: '1rem',
-                fontWeight: 'bold',
+                width: '160px',
+                textTransform: 'none',
                 borderColor: 'black',
                 color: 'black',
+                backgroundColor: "#ffffff",
+                fontSize: '1.5rem',
+                fontWeight: 'bold',  
+                '&:hover': {
+                    backgroundColor: "#ffffff",
+                },              
                 '&:hover': {
                     
-                    borderColor: "black"
+                    borderColor: 'black'
                 },
               }}
            
@@ -93,11 +97,13 @@ const AddChannel = ({ open, handleClose  }) => {
                variant="contained"
                color="secondary"
                sx={{
+                   mr: 4,
                    variant: "h2",
-                   width: '100px',
+                   width: '160px',
                    textTransform: 'none',
                    backgroundColor: "#0b0b3b",
-                   fontSize: '1.2rem',
+                   fontSize: '1.55rem',
+                   fontWeight: 'bold',
                    '&:hover': {
                        backgroundColor: "#0b0b3b",
                    },

@@ -39,7 +39,7 @@ const Fistlogin = () => {
             </div>
           </div>
         </div>
-      )
+      );
 }
 
 export default Fistlogin;
