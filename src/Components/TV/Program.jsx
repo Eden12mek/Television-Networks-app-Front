@@ -26,6 +26,7 @@ import AddChannel from './AddChannel';
 import AddProgram from './AddProgram';
 
 const Program = () => {
+    const [program, setProgram]=useState([])
     const [open, setOpen] = useState(false);
 
     const handleOpen = () => setOpen(true);

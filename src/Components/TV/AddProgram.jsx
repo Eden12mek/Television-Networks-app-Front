@@ -1,7 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Box, Button, TextField, Typography, MenuItem, Modal } from '@mui/material';
 
 const AddProgram = ({ open, handleClose }) => {
+    const [videoUrl, setVideoUrl]=useState('')
+    const [title, setTitle]=useState('')
+    const [duration, setDuration]=useState('')
+    const [channel, setChannel]=useState('')
+    const [category, setCategory]=useState('')
+    const [type, setType]=useState('')
+
     return (
         <Modal
             open={open}
@@ -65,6 +72,7 @@ const AddProgram = ({ open, handleClose }) => {
                                         typography: 'h2',
                                     },
                                 }}
+                                onChange={(e) => setVideoUrl(e.target.value)}
                             >
                                 
                             </Box>
@@ -98,6 +106,7 @@ const AddProgram = ({ open, handleClose }) => {
                                         typography: 'h2',
                                     },
                                 }}
+                                onChange={(e) => setTitle(e.target.value)}
                             >
                                 
                             </Box>
@@ -133,6 +142,7 @@ const AddProgram = ({ open, handleClose }) => {
                                         typography: 'h2',
                                     },
                                 }}
+                                onChange={(e) => setDuration(e.target.value)}
                             >
                                 
                             </Box>
@@ -174,7 +184,8 @@ const AddProgram = ({ open, handleClose }) => {
                                             maxWidth: '100%',
                                             typography: 'h2',
                                         },
-                                    }}
+                                    }}onChange={(e) => setCategory(e.target.value)}
+
                                 >
                                     <Box sx={{ flex: 'auto', typography: 'h3', fontSize: '1.5rem' }}>
                                         Select...
@@ -237,6 +248,7 @@ const AddProgram = ({ open, handleClose }) => {
                                             typography: 'h2',
                                         },
                                     }}
+                                    onChange={(e) => setChannel(e.target.value)}
                                 >
                                     <Box sx={{ flex: 'auto', typography: 'h3', fontSize: '1.5rem' }}>
                                         Select...
@@ -296,6 +308,7 @@ const AddProgram = ({ open, handleClose }) => {
                                             typography: 'h2',
                                         },
                                     }}
+                                    onChange={(e) => setType(e.target.value)}
                                 >
                                     <Box sx={{ flex: 'auto', typography: 'h3', fontSize: '1.5rem' }}>
                                         Select...

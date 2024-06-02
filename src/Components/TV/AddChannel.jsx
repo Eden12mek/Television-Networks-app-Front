@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, redirect, useNavigate } from 'react-router-dom';
 import {
   Box,
   Grid,
@@ -12,6 +12,8 @@ import {
   Container,
   TextField
 } from '@mui/material';
+
+import axios from 'axios';
 import {
   Dashboard as DashboardIcon,
   Movie as MovieIcon,
@@ -25,11 +27,44 @@ import {
   Delete as DeleteIcon,
 } from '@mui/icons-material';
 
+const access_token=window.localStorage.getItem("access_token")
+export async function action({request}){
+    const formData = await request.formData();
+    const apiUrl="http://localhost:3000/General/channel"
+        const res=await axios.post(apiUrl,formData,{
+            headers:{
+                "Authorization":"Bearer " + access_token
+            }
+        })
+    console.log(res.data)
+    return redirect('/channel')
+}
 const AddChannel = ({ open, handleClose  }) => {
+    const navigate=useNavigate()
+    const [name,setName]=useState('')
+    function getFormData(object) {
+        const formData = new FormData();
+        Object.keys(object).forEach(key => formData.append(key, object[key]));
+        return formData;
+    }   
+    const handleSubmit=async()=>{
+        const formName={...name}
+        const formData=getFormData(formName)
+        const apiUrl="http://localhost:3000/General/channel"
+        const res=await axios.post(apiUrl,formData,{
+            headers:{
+                "Authorization":"Bearer " + access_token
+            }
+        })
+        console.log("before redirect ")
+        return redirect('../');
+    }
+
     return (
     <Modal
         open={open}
         onClose={handleClose}
+        onSubmit={handleSubmit}
         aria-labelledby="add-program-modal-title"
         aria-describedby="add-program-modal-description"
       >
@@ -60,6 +95,7 @@ const AddChannel = ({ open, handleClose  }) => {
             <Typography variant="h6" fontSize= '1.5rem'  alignSelf="flex-start" sx={{ ml: 23 }}>
               Name
             </Typography>
+            onChange={(e) => setName(e.target.value)}
             <TextField
               variant="outlined"
               sx={{ flexGrow: 1, width: '100%', maxWidth: 450 }}

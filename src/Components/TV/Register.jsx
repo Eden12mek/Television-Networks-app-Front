@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Box, Typography, TextField, Button, Grid } from '@mui/material';
+import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -9,18 +10,71 @@ const Register = () => {
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
     const [image, setImage] = useState(null);
+    const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
 
-    const handleRegister = () => {
-        // Mock registration logic
-        // Save role to localStorage for simplicity
-        localStorage.setItem('userRole', role);
-        // Navigate to login page after registration
-        navigate('/login');
+    const validateName = (name) => /^[A-Za-z\s]+$/.test(name);
+    const validatePhoneNumber = (phoneNumber) => /^[0-9]+$/.test(phoneNumber);
+
+    const handleRegister = async () => {
+        if (!name || !validateName(name)) {
+            setErrorMessage('Name is required and must contain only letters.');
+            return;
+        }
+        if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
+            setErrorMessage('Phone number is required and must contain only digits.');
+            return;
+        }
+        if (!email.endsWith('@gmail.com')) {
+            setErrorMessage('Email is required and must be a @gmail.com address.');
+            return;
+        }
+        if (password.length < 8) {
+            setErrorMessage('Password is required and must be at least 8 characters long.');
+            return;
+        }
+        if (!role) {
+            setErrorMessage('Role is required.');
+            return;
+        }
+        if (!image) {
+            setErrorMessage('Image is required.');
+            return;
+        }
+    
+        try {
+            const formData = new FormData();
+            formData.append('username', name);
+            formData.append('password', password);
+            formData.append('phoneNum', phoneNumber);
+            formData.append('email', email);
+            formData.append('role', role);
+            formData.append('image', image);
+    
+            // Send the registration data along with the image file to the backend
+            await axios.post('http://localhost:5000/register', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+    
+            // Redirect to login page upon successful registration
+            navigate('/login');
+        } catch (error) {
+            console.error(error);
+            setErrorMessage('Registration failed. Please try again.');
+        }
     };
 
     const handleImageChange = (e) => {
-        setImage(e.target.files[0]);
+        const file = e.target.files[0];
+        if (file && !file.type.startsWith('image/')) {
+            setErrorMessage('Only image files (png, jpeg, etc.) are allowed.');
+            setImage(null);
+            return;
+        }
+        setImage(file);
+        setErrorMessage('');
     };
 
     return (
@@ -46,6 +100,8 @@ const Register = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 sx={{ mb: 2 }}
+                                error={!!errorMessage && !validateName(name)}
+                                helperText={errorMessage && !validateName(name) ? 'Name must contain only letters.' : ''}
                             />
                             <TextField
                                 fullWidth
@@ -55,6 +111,8 @@ const Register = () => {
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 sx={{ mb: 2 }}
+                                error={!!errorMessage && !validatePhoneNumber(phoneNumber)}
+                                helperText={errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : ''}
                             />
                             <TextField
                                 fullWidth
@@ -64,6 +122,8 @@ const Register = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 sx={{ mb: 2 }}
+                                error={!!errorMessage && !email.endsWith('@gmail.com')}
+                                helperText={errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : ''}
                             />
                             <TextField
                                 fullWidth
@@ -74,17 +134,23 @@ const Register = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 sx={{ mb: 2 }}
+                                error={!!errorMessage && password.length < 8}
+                                helperText={errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : ''}
                             />
-                            <TextField
+                            <Select
                                 fullWidth
-                                variant="outlined"
-                                placeholder="Role (admin/user)"
-                                margin="normal"
                                 value={role}
                                 onChange={(e) => setRole(e.target.value)}
+                                label="Role"
                                 sx={{ mb: 2 }}
-                                
-                            />
+                                error={!!errorMessage && !role}
+                            >
+                                <MenuItem value="">
+                                    <em>None</em>
+                                </MenuItem>
+                                <MenuItem value="admin">Admin</MenuItem>
+                                <MenuItem value="user">User</MenuItem>
+                            </Select>
                             <Button
                                 variant="contained"
                                 component="label"
@@ -108,6 +174,11 @@ const Register = () => {
                                     onChange={handleImageChange}
                                 />
                             </Button>
+                            {errorMessage && (
+                                <Typography color="error" sx={{ mt: 2 }}>
+                                    {errorMessage}
+                                </Typography>
+                            )}
                             <Button
                                 variant="contained"
                                 color="primary"
