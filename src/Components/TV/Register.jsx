@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -16,21 +15,37 @@ const Register = () => {
     const validateName = (name) => /^[A-Za-z\s]+$/.test(name);
     const validatePhoneNumber = (phoneNumber) => /^[0-9]+$/.test(phoneNumber);
 
-    const handleRegister = async () => {
-        if (!name || !validateName(name)) {
-            setErrorMessage('Name is required and must contain only letters.');
+    const handleRegister = () => {
+        if (!name) {
+            setErrorMessage('Name is required.');
             return;
         }
-        if (!phoneNumber || !validatePhoneNumber(phoneNumber)) {
-            setErrorMessage('Phone number is required and must contain only digits.');
+        if (!validateName(name)) {
+            setErrorMessage('Name must contain only letters.');
+            return;
+        }
+        if (!phoneNumber) {
+            setErrorMessage('Phone number is required.');
+            return;
+        }
+        if (!validatePhoneNumber(phoneNumber)) {
+            setErrorMessage('Phone number must contain only digits.');
+            return;
+        }
+        if (!email) {
+            setErrorMessage('Email is required.');
             return;
         }
         if (!email.endsWith('@gmail.com')) {
-            setErrorMessage('Email is required and must be a @gmail.com address.');
+            setErrorMessage('Email must be a @gmail.com address.');
+            return;
+        }
+        if (!password) {
+            setErrorMessage('Password is required.');
             return;
         }
         if (password.length < 8) {
-            setErrorMessage('Password is required and must be at least 8 characters long.');
+            setErrorMessage('Password must be at least 8 characters long.');
             return;
         }
         if (!role) {
@@ -41,40 +56,16 @@ const Register = () => {
             setErrorMessage('Image is required.');
             return;
         }
-    
-        try {
-            const formData = new FormData();
-            formData.append('username', name);
-            formData.append('password', password);
-            formData.append('phoneNum', phoneNumber);
-            formData.append('email', email);
-            formData.append('role', role);
-            formData.append('image', image);
-    
-            // Send the registration data along with the image file to the backend
-            await axios.post('http://localhost:5000/register', formData, {
-                headers: {
-                    'Content-Type': 'multipart/form-data'
-                }
-            });
-    
-            // Redirect to login page upon successful registration
-            navigate('/login');
-        } catch (error) {
-            console.error(error);
-            setErrorMessage('Registration failed. Please try again.');
-        }
+
+        // Mock registration logic
+        // Save role to localStorage for simplicity
+        localStorage.setItem('userRole', role);
+        // Navigate to login page after registration
+        navigate('/login');
     };
 
     const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        if (file && !file.type.startsWith('image/')) {
-            setErrorMessage('Only image files (png, jpeg, etc.) are allowed.');
-            setImage(null);
-            return;
-        }
-        setImage(file);
-        setErrorMessage('');
+        setImage(e.target.files[0]);
     };
 
     return (
@@ -100,8 +91,8 @@ const Register = () => {
                                 value={name}
                                 onChange={(e) => setName(e.target.value)}
                                 sx={{ mb: 2 }}
-                                error={!!errorMessage && !validateName(name)}
-                                helperText={errorMessage && !validateName(name) ? 'Name must contain only letters.' : ''}
+                                error={!name || (!!errorMessage && !validateName(name))}
+                                helperText={!name ? 'Name is required.' : (errorMessage && !validateName(name) ? 'Name must contain only letters.' : '')}
                             />
                             <TextField
                                 fullWidth
@@ -111,8 +102,8 @@ const Register = () => {
                                 value={phoneNumber}
                                 onChange={(e) => setPhoneNumber(e.target.value)}
                                 sx={{ mb: 2 }}
-                                error={!!errorMessage && !validatePhoneNumber(phoneNumber)}
-                                helperText={errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : ''}
+                                error={!phoneNumber || (!!errorMessage && !validatePhoneNumber(phoneNumber))}
+                                helperText={!phoneNumber ? 'Phone number is required.' : (errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : '')}
                             />
                             <TextField
                                 fullWidth
@@ -122,8 +113,8 @@ const Register = () => {
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
                                 sx={{ mb: 2 }}
-                                error={!!errorMessage && !email.endsWith('@gmail.com')}
-                                helperText={errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : ''}
+                                error={!email || (!!errorMessage && !email.endsWith('@gmail.com'))}
+                                helperText={!email ? 'Email is required.' : (errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : '')}
                             />
                             <TextField
                                 fullWidth
@@ -134,8 +125,8 @@ const Register = () => {
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
                                 sx={{ mb: 2 }}
-                                error={!!errorMessage && password.length < 8}
-                                helperText={errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : ''}
+                                error={!password || (!!errorMessage && password.length < 8)}
+                                helperText={!password ? 'Password is required.' : (errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : '')}
                             />
                             <Select
                                 fullWidth
@@ -143,7 +134,7 @@ const Register = () => {
                                 onChange={(e) => setRole(e.target.value)}
                                 label="Role"
                                 sx={{ mb: 2 }}
-                                error={!!errorMessage && !role}
+                                error={!role || (!!errorMessage && !role)}
                             >
                                 <MenuItem value="">
                                     <em>None</em>

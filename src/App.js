@@ -4,20 +4,16 @@ import { ThemeProvider, createTheme } from '@mui/material/styles'; // Import The
 
 // import Sidebar from './Components/TV/Sidebar';
 import Login from './Components/TV/Login';
-import Sidebar from './Components/TV/Sidebar';
 import Channel from './Components/TV/Channel';
 import Dashboard from './Components/TV/Dashboard';
 import Program from './Components/TV/Program';
 import Logout from './Components/TV/Logout';
 import AddChannel from './Components/TV/AddChannel';
 import AddProgram from './Components/TV/AddProgram';
-import NewChannel from './Components/TV/newchannel';
-import New from './Components/TV/New';
 import DashboardPage from './Components/TV/DashboardPage';
-import AddchanName from './Components/TV/AddchanName';
-import Chanselect from './Components/TV/Chanselect';
-import Fistlogin from './Components/TV/Fistlogin';
 import Register from './Components/TV/Register';
+import CustomerPage from './Components/TV/CustomerPage';
+import MainLayout from './Components/Tables/MainLayout';
 
 
 
@@ -36,24 +32,17 @@ const App = () => {
     <ThemeProvider theme={theme}> {/* Wrap your Routes with ThemeProvider */}
       <Router>
         <Routes>
-          <Route path="/register" element={<Register />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/channel" element={<Channel />} />
           <Route path="/program" element={<Program />} />
           <Route path="/logout" element={<Logout />} />
           <Route path="/addchannel" element={<AddChannel />} />
-          <Route path="/newchannel" element={<NewChannel />} />
           <Route path="/addprogram" element={<AddProgram />} />
-          <Route path="/new" element={<New />} />
           <Route path="/dashboardpage" element={<DashboardPage />} />
-          <Route path="/sidebar" element={<Sidebar />} />
-          <Route path="/chan" element={<Chanselect />} />
-          <Route path="/fist" element={<Fistlogin />} />
-          {/* <Route path="/timg" element={<Timg />} />
-          <Route path="/combine" element={<Combine />} />
-          <Route path="/boxoflogin" element={<Boxoflogin />} />
-          <Route path="/addchan" element={<AddchanName />} /> */}
+          <Route path="/customer" element={<CustomerPage />} />
+          <Route path="/mainlayout" element={<MainLayout />} />        
         </Routes>
       </Router>
     </ThemeProvider>

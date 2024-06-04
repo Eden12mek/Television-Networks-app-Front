@@ -3,47 +3,25 @@ import { Box, Typography, TextField, Button, Grid, InputAdornment, Link } from '
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import LockIcon from '@mui/icons-material/Lock';
 import { useNavigate } from 'react-router-dom';
-import axios from 'axios';
-
 
 const Login = () => {
     const [phoneNumber, setPhoneNumber] = useState('');
     const [password, setPassword] = useState('');
     const navigate = useNavigate();
 
-   
+    const handleLogin = () => {
+        // Mock authentication logic
+        // Get the role from localStorage
+        const role = localStorage.getItem('userRole');
 
-const handleLogin = async () => {
-    try {
-        const response = await axios.post('http://localhost:3000/login', {
-            phoneNum: phoneNumber,
-            password: password
-        });
-
-        const { access_token, foundUser } = response.data;
-
-        // Store the token and user information as needed
-        localStorage.setItem('accessToken', access_token);
-        localStorage.setItem('userRole', foundUser.role); // assuming `role` is part of `foundUser`
-
-        if (foundUser.role === 'admin') {
+        if (role === 'admin') {
             navigate('/dashboard');
-        } else if (foundUser.role === 'user') {
+        } else if (role === 'user') {
             navigate('/channel');
         } else {
             alert('Invalid credentials');
         }
-    } catch (error) {
-        if (error.response && error.response.status === 400) {
-            alert(error.response.data.message);
-        } else if (error.response && error.response.status === 401) {
-            alert('Wrong password');
-        } else {
-            alert('Server error');
-        }
-    }
-};
-
+    };
 
     return (
         <Box

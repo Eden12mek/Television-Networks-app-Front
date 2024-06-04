@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
 import {
     Box,
     Grid,
@@ -18,6 +19,7 @@ import {
     Group as GroupIcon,
     Add as AddIcon,
     Done as DoneIcon,
+    Close as CloseIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
     Visibility as VisibilityIcon
@@ -26,12 +28,28 @@ import AddChannel from './AddChannel';
 import AddProgram from './AddProgram';
 
 const Program = () => {
-    const [program, setProgram]=useState([])
+    const [programs, setPrograms]=useState([])
     const [open, setOpen] = useState(false);
+    const [isActive, setIsActive] = useState(true);
 
+
+    useEffect(() => {
+        const fetchPrograms = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/General/movies/getall');
+                setPrograms(response.data);
+            } catch (error) {
+                console.error('Error fetching channels:', error);
+            }
+        };
+
+        fetchPrograms();
+    }, []);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-
+    const handleClick = () => {
+        setIsActive((prevState) => !prevState);
+    };
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
             <Box sx={{ width: '15%', minWidth: 300, display: 'flex', flexDirection: 'column' }}>
@@ -186,34 +204,50 @@ const Program = () => {
                                 <Typography  mr={15} variant="h6">Action</Typography>
                             </Grid>
                             <Divider sx={{ mt: 3, mb: 4, mx: 1, ml: 2, mr:2.5 }} />
-                            <Grid item container justifyContent="space-between" alignItems="center" ml={4} >
-                                <Typography>1</Typography>
-                                <Typography ml={-14}>Game of Thrones</Typography>
-                                <Typography ml={-15}>2h</Typography>
-                                <Typography mr={-18} ml={-5}>
-                                    Medieval Movie
-                                    <br />
-                                    Series
-                                </Typography>
-                                <Box sx={{ display: 'flex', alignItems: 'center', mr:-15 }}>
-                                    <Box sx={{ display: 'flex', alignItems: 'center', bgcolor: 'green.100', p: 1, borderRadius: 1, mr: 2 }}>
-                                        <DoneIcon color="success" />
-                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                            {programs.map((program) => (
+                                <Grid key={program.id} item container justifyContent="space-between" alignItems="center" ml={4} >
+                                    <Typography>{program.id}</Typography>
+                                    <Typography ml={-14}>{program.title}</Typography>
+                                    <Typography ml={-15}>{program.duration}</Typography>
+                                    <Typography mr={-18} ml={-5}>{program.description}</Typography>
+                                    <Box 
+                                        sx={{ 
+                                            display: 'flex', 
+                                            alignItems: 'center', 
+                                            bgcolor: isActive ? 'green.100' : 'red.100',
+                                            mr:-15 
+                                        }}
+                                        onClick={handleClick}
+                                    >
+                                        <Box sx={{ display: 'flex', alignItems: 'center', p: 1, borderRadius: 1, mr: 2 }}>
+                                            {isActive ?(
+                                                <>
+                                                    <DoneIcon color="success" />
+                                                    <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                                </>
+                                            
+                                        ):(
+                                            <>
+                                                <CloseIcon color="success" />
+                                                <Typography sx={{ ml: 1, color: 'green.800' }}>Deactive</Typography>
+                                            </>
+                                        )}
+                                        </Box>
+                                        <Avatar sx={{ bgcolor: isActive ? 'green.800': 'red.800', width: 65, height: 65 }} />
                                     </Box>
-                                    <Avatar sx={{ bgcolor: 'green.800', width: 65, height: 65 }} />
-                                </Box>
-                                <Box mr={10} sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <IconButton>
-                                        <VisibilityIcon />
-                                    </IconButton>
-                                    <IconButton>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton sx={{ color: 'red' }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Box>
-                            </Grid>
+                                    <Box mr={10} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <IconButton>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton sx={{ color: 'red' }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Grid>
+                             ) )}
                         </Box>
                     </Box>
                     {/* </Box> */}

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import {
     Box,
@@ -10,6 +10,8 @@ import {
     IconButton,
     Container,
     Divider,
+    Modal,
+    TextField
 } from '@mui/material';
 import {
     Search as SearchIcon,
@@ -23,14 +25,44 @@ import {
     Close as CloseIcon,
     Visibility as VisibilityIcon
 } from '@mui/icons-material';
-import AddChannel from './AddChannel';
+import axios from 'axios';
 
 const Channel = () => {
     const [open, setOpen] = useState(false);
+    const [channels, setChannels] = useState([]);
+    const [isActive, setIsActive] = useState(true);
+    const [name, setName] = useState('');
+
+    useEffect(() => {
+        const fetchChannels = async () => {
+            try {
+                const response = await axios.get('http://localhost:4000/General/channel');
+                setChannels(response.data);
+            } catch (error) {
+                console.error('Error fetching channels:', error);
+            }
+        };
+
+        fetchChannels();
+    }, []);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    const [isActive, setIsActive] = useState(true);
+
+    const handleChange = (event) => {
+        setName(event.target.value);
+    };
+
+    const handleAddChannel = async (event) => {
+        event.preventDefault();
+        try {
+            const response = await axios.post('http://localhost:4000/General/channel', { name });
+            setChannels((prevChannels) => [...prevChannels, response.data.channel]);
+            handleClose();
+        } catch (error) {
+            console.error('Error adding channel:', error);
+        }
+    };
 
     const handleClick = () => {
         setIsActive((prevState) => !prevState);
@@ -140,7 +172,6 @@ const Channel = () => {
                     </Box>
                 </Box>
                 <Paper elevation={3} sx={{ p: 3, mt: 4, flexGrow: 1, overflowY: 'auto', ml: 4, mr: 3, mb: 2 }}>
-                    {/* <Box display="flex" justifyContent="center" alignItems="center" p={4} bgcolor="white" borderRadius={4} boxShadow={2} maxWidth={{ xs: '100%', md: '2338px' }}> */}
                     <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
                         <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
                             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
@@ -184,57 +215,77 @@ const Channel = () => {
                                 <Typography mr={100} variant="h6">Action</Typography>
                             </Grid>
                             <Divider sx={{ mt: 3, mb: 5, mx: 1, ml: 2, mr: 3 }} />
-                            <Grid item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
-                                <Typography mr={-27.5} variant="h5"> GOT </Typography>
-                                <Box
-                                    mr={-30}
-                                    sx={{
-                                        display: 'flex',
-                                        alignItems: 'center',
-                                        cursor: 'pointer',
-                                        bgcolor: isActive ? 'green.100' : 'red.100',
-                                        p: 1,
-                                        borderRadius: 1,
-                                        mr: 2,
-                                    }}
-                                    onClick={handleClick}
-                                >
-                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                        {isActive ? (
-                                            <>
-                                                <DoneIcon color="success" />
-                                                <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <CloseIcon color="error" />
-                                                <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
-                                            </>
-                                        )}
+                            {channels.map((channel) => (
+                                <Grid key={channel.id} item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
+                                    <Typography mr={-27.5} variant="h5">{channel.name}</Typography>
+                                    <Box
+                                        mr={-30}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            cursor: 'pointer',
+                                            bgcolor: isActive ? 'green.100' : 'red.100',
+                                            p: 1,
+                                            borderRadius: 1,
+                                            mr: 2,
+                                        }}
+                                        onClick={handleClick}
+                                    >
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            {isActive ? (
+                                                <>
+                                                    <DoneIcon color="success" />
+                                                    <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CloseIcon color="error" />
+                                                    <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
+                                                </>
+                                            )}
+                                        </Box>
+                                        <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
                                     </Box>
-                                    <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
-                                </Box>
-                                <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
-                                    <IconButton>
-                                        <VisibilityIcon />
-                                    </IconButton>
-                                    <IconButton>
-                                        <EditIcon />
-                                    </IconButton>
-                                    <IconButton sx={{ color: 'red' }}>
-                                        <DeleteIcon />
-                                    </IconButton>
-                                </Box>
-                            </Grid>
+                                    <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <IconButton>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton sx={{ color: 'red' }}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </Box>
+                                </Grid>
+                            ))}
                         </Box>
                     </Box>
-                    {/* </Box> */}
                 </Paper>
             </Box>
-            <AddChannel open={open} handleClose={handleClose} />
+            <Modal open={open} onClose={handleClose}>
+                <form onSubmit={handleAddChannel}>
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                        <Box bgcolor="white" borderRadius={2} p={4} boxShadow={3}>
+                            <Typography variant="h4" mb={2}>Add Channel</Typography>
+                            <TextField
+                                label="Channel Name"
+                                name="name"
+                                value={name}
+                                onChange={handleChange}
+                                fullWidth
+                                margin="normal"
+                            />
+                            <Box display="flex" justifyContent="space-between" mt={2}>
+                                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
+                                <Button type="submit" variant="contained" color="primary">Add</Button>
+                            </Box>
+                        </Box>
+                    </Box>
+                </form>
+            </Modal>
         </Box>
     );
 };
-
 
 export default Channel;
