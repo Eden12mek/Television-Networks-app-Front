@@ -29,10 +29,13 @@ import axios from 'axios';
 
 const Channel = () => {
     const [open, setOpen] = useState(false);
+    const [editOpen, setEditOpen] = useState(false);
     const [channels, setChannels] = useState([]);
     const [isActive, setIsActive] = useState(true);
     const [name, setName] = useState('');
+    const [currentChannel, setCurrentChannel] = useState(null);
 
+    //  FetchChannels
     useEffect(() => {
         const fetchChannels = async () => {
             try {
@@ -48,11 +51,17 @@ const Channel = () => {
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const handleEditOpen = (channel) => {
+        setCurrentChannel(channel);
+        setEditOpen(true);
+    };
+    const handleEditClose = () => setEditOpen(false);
 
     const handleChange = (event) => {
         setName(event.target.value);
     };
 
+    //  PostChannels
     const handleAddChannel = async (event) => {
         event.preventDefault();
         try {
@@ -64,8 +73,35 @@ const Channel = () => {
         }
     };
 
-    const handleClick = () => {
-        setIsActive((prevState) => !prevState);
+    //  EditChannels
+    const handleEditChannel = async (event) => {
+        event.preventDefault();
+        try {
+            await axios.put(`http://localhost:4000/General/channel/update/${currentChannel.id}`, { name: currentChannel.name });
+            setChannels((prevChannels) => prevChannels.map(channel => channel.id === currentChannel.id ? currentChannel : channel));
+            handleEditClose();
+        } catch (error) {
+            console.error('Error editing channel:', error);
+        }
+    };
+
+    //  DeleteChannels
+    const handleDeleteChannel = async (id) => {
+        try {
+            await axios.delete(`http://localhost:4000/General/channel/delete/${id}`);
+            setChannels((prevChannels) => prevChannels.filter(channel => channel.id !== id));
+        } catch (error) {
+            console.error('Error deleting channel:', error);
+        }
+    };
+    //  StatusChannels
+    const handleToggleSuspend = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:4000/General/channel/changestatus/${id}`);
+            setChannels((prevChannels) => prevChannels.map(channel => channel.id === id ? response.data.updatedChannel : channel));
+        } catch (error) {
+            console.error('Error toggling suspend:', error);
+        }
     };
 
     return (
@@ -229,33 +265,37 @@ const Channel = () => {
                                             borderRadius: 1,
                                             mr: 2,
                                         }}
-                                        onClick={handleClick}
                                     >
                                         <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            {isActive ? (
-                                                <>
-                                                    <DoneIcon color="success" />
-                                                    <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <CloseIcon color="error" />
-                                                    <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
-                                                </>
-                                            )}
+                                            <IconButton onClick={() => handleToggleSuspend(channel.id)}>
+                                                {channel.isSuspended ? (
+                                                    <>
+                                                        <DoneIcon color="success" />
+                                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <CloseIcon color="error" />
+                                                        <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
+                                                    </>
+                                                )}
+                                            </IconButton>
                                         </Box>
-                                        <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
+
                                     </Box>
                                     <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
                                         <IconButton>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton>
+                                        <IconButton onClick={() => handleEditOpen(channel)}>
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton sx={{ color: 'red' }}>
+                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteChannel(channel.id)}>
                                             <DeleteIcon />
                                         </IconButton>
+                                        {/* <IconButton onClick={() => handleToggleSuspend(channel.id)}>
+                                            {channel.isSuspended ? <DoneIcon /> : <CloseIcon />}
+                                        </IconButton> */}
                                     </Box>
                                 </Grid>
                             ))}
@@ -283,6 +323,24 @@ const Channel = () => {
                         </Box>
                     </Box>
                 </form>
+            </Modal>
+
+            <Modal open={editOpen} onClose={handleEditClose}>
+                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
+                    <Typography variant="h6">Edit Channel</Typography>
+                    <form onSubmit={handleEditChannel}>
+                        <TextField
+                            label="Name"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentChannel?.name || ''}
+                            onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
+                        />
+                        <Button variant="contained" color="primary" type="submit">
+                            Save
+                        </Button>
+                    </form>
+                </Box>
             </Modal>
         </Box>
     );

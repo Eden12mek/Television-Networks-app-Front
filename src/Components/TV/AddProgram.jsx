@@ -61,7 +61,7 @@ useEffect(() => {
   fetchTypeData();
 }, []);
 
-console.log(typeData)
+  console.log(typeData)
   const handleAddProgram = async (event) => {
     event.preventDefault();
     try {
@@ -70,8 +70,8 @@ console.log(typeData)
         duration: parseInt(duration),
         description,
         videoUrl,
-        channelId, // Ensure channelId is an integer
-        typeId, // Ensure typeId is an integer
+        channelId, 
+        typeId, 
         categoryId
       });
       console.log(response.data);
