@@ -30,24 +30,26 @@ import axios from 'axios';
 const Channel = () => {
     const [open, setOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
+    const [viewOpen, setViewOpen] = useState(false);
     const [channels, setChannels] = useState([]);
     const [isActive, setIsActive] = useState(true);
     const [name, setName] = useState('');
     const [currentChannel, setCurrentChannel] = useState(null);
 
-    //  FetchChannels
-    useEffect(() => {
-        const fetchChannels = async () => {
-            try {
-                const response = await axios.get('http://localhost:4000/General/channel');
-                setChannels(response.data);
-            } catch (error) {
-                console.error('Error fetching channels:', error);
-            }
-        };
 
-        fetchChannels();
+ //fetchchannels
+    const fetchChannels = async () => {
+        try {
+            const response = await axios.get('http://localhost:4000/General/channel/getall');
+            setChannels(response.data);
+        } catch (error) {
+            console.error('Error fetching channels:', error);
+        }
+    };
+    useEffect(() => {
+    fetchChannels();
     }, []);
+    console.log(channels);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -56,7 +58,11 @@ const Channel = () => {
         setEditOpen(true);
     };
     const handleEditClose = () => setEditOpen(false);
-
+    const handleViewOpen = (channel) => {
+        setCurrentChannel(channel);
+        setViewOpen(true);
+    };
+    const handleViewClose = () => setViewOpen(false);
     const handleChange = (event) => {
         setName(event.target.value);
     };
@@ -101,6 +107,17 @@ const Channel = () => {
             setChannels((prevChannels) => prevChannels.map(channel => channel.id === id ? response.data.updatedChannel : channel));
         } catch (error) {
             console.error('Error toggling suspend:', error);
+        }
+    };
+     //  ViewChannels
+     const handleViewChannel = async (event) => {
+        event.preventDefault();
+        try {
+            await axios.get(`http://localhost:4000/General/channel/get/${currentChannel.id}`, { name: currentChannel.name });
+            setChannels((prevChannels) => prevChannels.map(channel => channel.id === currentChannel.id ? currentChannel : channel));
+            handleViewClose();
+        } catch (error) {
+            console.error('Error viewing channel:', error);
         }
     };
 
@@ -284,7 +301,7 @@ const Channel = () => {
 
                                     </Box>
                                     <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <IconButton>
+                                        <IconButton onClick={() => handleViewOpen(channel)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                         <IconButton onClick={() => handleEditOpen(channel)}>
@@ -336,9 +353,32 @@ const Channel = () => {
                             value={currentChannel?.name || ''}
                             onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
                         />
+                        <Button onClick={handleEditClose} sx={{ mr: 1 }}>Cancel</Button>
                         <Button variant="contained" color="primary" type="submit">
                             Save
                         </Button>
+                    </form>
+                </Box>
+            </Modal>
+            <Modal open={viewOpen} onClose={handleViewClose}>
+                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
+                    <Typography variant="h6">View Channel</Typography>
+                    <form onSubmit={handleViewChannel}>
+                        <TextField
+                            label="Name"
+                            sx={{ my: 2 }}
+                            value={currentChannel?currentChannel.name : ''}
+                            onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
+                            fullWidth
+                            required
+                            disabled
+                        />
+                        <Box mt={2} display="flex" justifyContent="flex-end">
+                        <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
+                        <Button variant="contained" color="primary" type="submit">
+                            Save
+                        </Button>
+                    </Box>
                     </form>
                 </Box>
             </Modal>
