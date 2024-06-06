@@ -66,13 +66,11 @@ const Channel = () => {
     };
     const handleViewClose = () => setViewOpen(false);
     const handleChange = (event) => {
-        if (event.target.name === "search") {
-            setSearchQuery(event.target.value);
-        } else {
-            setName(event.target.value);
-        }
+        setName(event.target.value);
     };
-
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+    };
 
     //  PostChannels
     const handleAddChannel = async (event) => {
@@ -129,10 +127,9 @@ const Channel = () => {
     };
 
     // Filter channels based on search query
-    const filteredChannels = channels.filter(channel =>
-        channel.name.toLowerCase().includes(searchQuery.toLowerCase())
-    );
-
+    const filteredChannels = searchQuery
+        ? channels.filter(channel => channel.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        : channels;
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -241,19 +238,24 @@ const Channel = () => {
                     <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
                         <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
                             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
-                                <Box width={940} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
+                                {/* <Box width={940} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
                                     <Box display="flex" gap={1} justifyContent="space-between">
                                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
-                                        <TextField
-                                            variant="standard"
-                                            label="Search"
-                                            value={searchQuery}
-                                            onChange={handleChange}
-                                            name="search"
-                                        />
-
+                                        <Typography variant="h6">Search</Typography>
                                     </Box>
-                                </Box>
+                                </Box> */}
+                                <TextField
+                                    variant="outlined"
+                                    size="small"
+                                    placeholder="Search"
+                                    InputProps={{
+                                        startAdornment: (
+                                            <SearchIcon sx={{ mr: 1 }} />
+                                        ),
+                                    }}
+                                    onChange={handleSearchInputChange}
+                                    value={searchQuery}
+                                />
                                 <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" gap={4} mr={-7} ml={9.95}>
                                     <Box display="flex" flexDirection="row" alignItems="center" gap={2}>
                                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/3bd4d5877d21f194a10f1e9aa0b8166aa78bc71475771154ed4cd4ae89b65dd6?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Export Icon" style={{ width: 32 }} />
@@ -288,7 +290,7 @@ const Channel = () => {
                                 <Typography mr={100} variant="h6">Action</Typography>
                             </Grid>
                             <Divider sx={{ mt: 3, mb: 5, mx: 1, ml: 2, mr: 3 }} />
-                            {channels.map((channel) => (
+                            {filteredChannels.map(channel => (
                                 <Grid key={channel.id} item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
                                     <Typography mr={-27.5} variant="h5">{channel.name}</Typography>
                                     <Box
@@ -333,53 +335,6 @@ const Channel = () => {
                                         {/* <IconButton onClick={() => handleToggleSuspend(channel.id)}>
                                             {channel.isSuspended ? <DoneIcon /> : <CloseIcon />}
                                         </IconButton> */}
-                                    </Box>
-                                </Grid>
-                            ))}
-                            {filteredChannels.map((channel) => (
-                                <Grid key={channel.id} item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
-                                    <Typography mr={-27.5} variant="h5">{channel.name}</Typography>
-                                    <Box
-                                        mr={-30}
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            cursor: 'pointer',
-                                            bgcolor: isActive ? 'green.100' : 'red.100',
-                                            p: 1,
-                                            borderRadius: 1,
-                                            mr: 2,
-                                        }}
-                                    >
-                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            <IconButton onClick={() => handleToggleSuspend(channel.id)}>
-                                                {channel.isSuspended ? (
-                                                    <>
-                                                        <DoneIcon color="success" />
-                                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <CloseIcon color="error" />
-                                                        <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
-                                                    </>
-                                                )}
-                                            </IconButton>
-                                        </Box>
-                                    </Box>
-                                    <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <IconButton onClick={() => handleViewOpen(channel)}>
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => handleEditOpen(channel)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteChannel(channel.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        {/* <IconButton onClick={() => handleToggleSuspend(channel.id)}>
-                {channel.isSuspended ? <DoneIcon /> : <CloseIcon />}
-            </IconButton> */}
                                     </Box>
                                 </Grid>
                             ))}
@@ -452,5 +407,7 @@ const Channel = () => {
         </Box>
     );
 };
+
+
 
 export default Channel;
