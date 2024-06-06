@@ -35,9 +35,11 @@ const Channel = () => {
     const [isActive, setIsActive] = useState(true);
     const [name, setName] = useState('');
     const [currentChannel, setCurrentChannel] = useState(null);
+    const [searchQuery, setSearchQuery] = useState('');
 
 
- //fetchchannels
+
+    //fetchchannels
     const fetchChannels = async () => {
         try {
             const response = await axios.get('http://localhost:4000/General/channel/getall');
@@ -47,7 +49,7 @@ const Channel = () => {
         }
     };
     useEffect(() => {
-    fetchChannels();
+        fetchChannels();
     }, []);
     console.log(channels);
 
@@ -64,8 +66,13 @@ const Channel = () => {
     };
     const handleViewClose = () => setViewOpen(false);
     const handleChange = (event) => {
-        setName(event.target.value);
+        if (event.target.name === "search") {
+            setSearchQuery(event.target.value);
+        } else {
+            setName(event.target.value);
+        }
     };
+
 
     //  PostChannels
     const handleAddChannel = async (event) => {
@@ -109,8 +116,8 @@ const Channel = () => {
             console.error('Error toggling suspend:', error);
         }
     };
-     //  ViewChannels
-     const handleViewChannel = async (event) => {
+    //  ViewChannels
+    const handleViewChannel = async (event) => {
         event.preventDefault();
         try {
             await axios.get(`http://localhost:4000/General/channel/get/${currentChannel.id}`, { name: currentChannel.name });
@@ -120,6 +127,12 @@ const Channel = () => {
             console.error('Error viewing channel:', error);
         }
     };
+
+    // Filter channels based on search query
+    const filteredChannels = channels.filter(channel =>
+        channel.name.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -231,7 +244,14 @@ const Channel = () => {
                                 <Box width={940} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
                                     <Box display="flex" gap={1} justifyContent="space-between">
                                         <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
-                                        <Typography variant="h6">Search</Typography>
+                                        <TextField
+                                            variant="standard"
+                                            label="Search"
+                                            value={searchQuery}
+                                            onChange={handleChange}
+                                            name="search"
+                                        />
+
                                     </Box>
                                 </Box>
                                 <Box display="flex" flexDirection="row" justifyContent="space-between" alignItems="center" gap={4} mr={-7} ml={9.95}>
@@ -316,6 +336,53 @@ const Channel = () => {
                                     </Box>
                                 </Grid>
                             ))}
+                            {filteredChannels.map((channel) => (
+                                <Grid key={channel.id} item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
+                                    <Typography mr={-27.5} variant="h5">{channel.name}</Typography>
+                                    <Box
+                                        mr={-30}
+                                        sx={{
+                                            display: 'flex',
+                                            alignItems: 'center',
+                                            cursor: 'pointer',
+                                            bgcolor: isActive ? 'green.100' : 'red.100',
+                                            p: 1,
+                                            borderRadius: 1,
+                                            mr: 2,
+                                        }}
+                                    >
+                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <IconButton onClick={() => handleToggleSuspend(channel.id)}>
+                                                {channel.isSuspended ? (
+                                                    <>
+                                                        <DoneIcon color="success" />
+                                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                                    </>
+                                                ) : (
+                                                    <>
+                                                        <CloseIcon color="error" />
+                                                        <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
+                                                    </>
+                                                )}
+                                            </IconButton>
+                                        </Box>
+                                    </Box>
+                                    <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
+                                        <IconButton onClick={() => handleViewOpen(channel)}>
+                                            <VisibilityIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() => handleEditOpen(channel)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteChannel(channel.id)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                        {/* <IconButton onClick={() => handleToggleSuspend(channel.id)}>
+                {channel.isSuspended ? <DoneIcon /> : <CloseIcon />}
+            </IconButton> */}
+                                    </Box>
+                                </Grid>
+                            ))}
                         </Box>
                     </Box>
                 </Paper>
@@ -367,18 +434,18 @@ const Channel = () => {
                         <TextField
                             label="Name"
                             sx={{ my: 2 }}
-                            value={currentChannel?currentChannel.name : ''}
+                            value={currentChannel ? currentChannel.name : ''}
                             onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
                             fullWidth
                             required
                             disabled
                         />
                         <Box mt={2} display="flex" justifyContent="flex-end">
-                        <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
-                        <Button variant="contained" color="primary" type="submit">
-                            Save
-                        </Button>
-                    </Box>
+                            <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
+                            <Button variant="contained" color="primary" type="submit">
+                                Save
+                            </Button>
+                        </Box>
                     </form>
                 </Box>
             </Modal>

@@ -49,6 +49,9 @@ const Program = () => {
 
     const [typeId, setTypeId] = useState('');
     const [categoryId, setCategoryId] = useState('');
+    const [currentChannel, setCurrentChannel] = useState(null);
+    const [currentType, setCurrentType] = useState([]);
+    const [currentCategories, setCurrentCategory] = useState([]);
 
 
 
@@ -64,6 +67,8 @@ const Program = () => {
     useEffect(() => {
         fetchPrograms();
     }, []);
+    console.log(programs);
+
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     const handleEditOpen = (program) => {
@@ -138,12 +143,55 @@ const Program = () => {
             });
             console.log(response.data);
             handleClose();
+            
         } catch (error) {
             console.error('Error adding program:', error);
         }
     };
 
+ //Edit Programs   
 
+    const handleEditProgram = async (event) => {
+        event.preventDefault();
+        try {
+            await axios.put(`http://localhost:4000/General/movies/update/${currentProgram.id}`, {
+                title: currentProgram.title,
+                duration: parseInt(currentProgram.duration),
+                description: currentProgram.description,
+                videoUrl: currentProgram.videoUrl,
+                channelId: currentChannel.channelId,
+                categoryId: currentCategories.categoryId,
+                typeId: currentType.typeId
+            });
+
+            handleEditClose();
+            fetchPrograms();
+        } catch (error) {
+            console.error('Error editing program:', error);
+        }
+    };
+
+    //  ViewChannels
+    const handleViewProgram = async (event) => {
+        event.preventDefault();
+        try {
+            await axios.get(`http://localhost:4000/General/movies/get/${currentProgram.id}`, { title: currentProgram.title });
+            setPrograms((prevPrograms) => prevPrograms.map(program => program.id === currentProgram.id ? currentProgram : program));
+            handleViewClose();
+        } catch (error) {
+            console.error('Error viewing program:', error);
+        }
+    };
+
+    //  DeleteChannels
+    const handleDeleteProgram = async (id) => {
+        try {
+            await axios.delete(`http://localhost:4000/General/movies/delete/${id}`);
+            setPrograms((prevPrograms) => prevPrograms.filter(program => program.id !== id));
+        } catch (error) {
+            console.error('Error deleting channel:', error);
+        }
+    };
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
             <Box sx={{ width: '15%', minWidth: 300, display: 'flex', flexDirection: 'column' }}>
@@ -330,13 +378,13 @@ const Program = () => {
                                         <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
                                     </Box>
                                     <Box mr={10} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <IconButton>
+                                        <IconButton onClick={() => handleViewOpen(program)}>
                                             <VisibilityIcon />
                                         </IconButton>
-                                        <IconButton>
+                                        <IconButton onClick={() => handleEditOpen(program)}>
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton sx={{ color: 'red' }}>
+                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteProgram(program.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Box>
@@ -516,6 +564,405 @@ const Program = () => {
                         </Box>
                     </Box>
                 </form>
+            </Modal>
+
+            <Modal open={editOpen} onClose={handleEditClose}>
+                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
+                    <Typography variant="h6">Edit Program</Typography>
+                    <form onSubmit={handleEditProgram}>
+                        <TextField
+                            label="Title"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.title || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                        />
+                        <TextField
+                            label="Duration"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={parseInt(currentProgram?.duration || '')}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, duration: parseInt(e.target.value) })}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.description || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, description: e.target.value })}
+                        />
+                        <TextField
+                            label="Video URL"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.videoUrl || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                        />
+                        <TextField
+                            label="Channel ID"
+                            fullWidth
+                            select
+                            sx={{ my: 2 }}
+                            value={currentChannel?.channelId || ''}
+                            onChange={(e) => setCurrentChannel({ ...currentChannel, channelId: e.target.value })}
+                        >
+                            {
+                                channel && channel.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                        </TextField>
+
+                        <TextField
+                            label="Category"
+                            select
+                            variant='outlined'
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentCategories?.categoryId || ''}
+                            onChange={(e) => setCurrentCategory({ ...currentCategories, categoryId: e.target.value })}
+                        >
+                            {
+                                categoryData && categoryData.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                        </TextField>
+                        <TextField
+                            label="Type"
+                            select
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentType?.typeId || ''}
+                            onChange={(e) => setCurrentType({ ...currentType, typeId: e.target.value })}
+                        >
+                            {
+                                typeData && typeData.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))
+                            }
+                        </TextField>
+                        <Button onClick={handleEditClose} sx={{ mr: 1 }}>Cancel</Button>
+                        <Button variant="contained" color="primary" type="submit">
+                            Save
+                        </Button>
+                    </form>
+                </Box>
+            </Modal>
+
+            {/* <Modal open={editOpen} onClose={handleEditClose}>
+                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
+                    <Typography variant="h6">Edit Program</Typography>
+                    <form onSubmit={handleEditProgram}>
+                        <TextField
+                            label="Title"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.title || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                        />
+                        <TextField
+                            label="Duration"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={parseInt(currentProgram?.duration || '')}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, duration: parseInt(e.target.value) })}
+                        />
+                        <TextField
+                            label="Description"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.description || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, description: e.target.value })}
+                        />
+                        <TextField
+                            label="Video URL"
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentProgram?.videoUrl || ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                        />
+                        <TextField
+                            label="Channel ID"
+                            fullWidth
+                            select
+                            sx={{ my: 2 }}
+                            value={currentChannel?.channelId || ''}
+                            onChange={(e) => setCurrentChannel({ ...currentProgram, channelId: e.target.value })}
+                        >
+                            {
+                                channel && channel.map((items) => (
+
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                        </TextField>
+
+                        <TextField
+                            label="Category"
+                            select
+                            variant='outlined'
+                            fullWidth
+                            sx={{ my: 2 }}
+                            value={currentCategories?.categoryId || ''}
+                            onChange={(e) => setCurrentCategory({ ...currentCategories, categoryId: e.target.value })}
+                        >
+                            {
+                            categoryData && categoryData.map((items) => (
+                                <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                            ))}
+                        </TextField> 
+                        <TextField
+                            label="Type ID"
+                            fullWidth
+                            select
+                            sx={{ my: 2 }}
+                            value={currentType?.typeId || ''}
+                            onChange={(e) => setCurrentType({ ...currentType, typeId: e.target.value })}
+                        >   
+                        {
+                            typeData && typeData.map((items) => (
+                                <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                            ))
+                        } 
+                        </TextField>
+                        <Button onClick={handleEditClose} sx={{ mr: 1 }}>Cancel</Button>
+                        <Button variant="contained" color="primary" type="submit">
+                            Save
+                        </Button>
+                    </form>
+                </Box>
+            </Modal> */}
+
+            {/* <Modal
+                open={editOpen}
+                onClose={handleEditClose}
+                aria-labelledby="add-program-modal-title"
+                aria-describedby="add-program-modal-description"
+            >
+                <form >
+                    <Box
+                        display="flex"
+                        justifyContent="center"
+                        alignItems="center"
+                        minHeight="100vh"
+                    >
+                        <Box
+                            component="form"
+                            onSubmit={handleEditProgram}
+                            display="flex"
+                            flexDirection="column"
+                            px={{ xs: 2, md: 8 }}
+                            py={{ xs: 8, md: 5 }}
+                            bgcolor="white"
+                            borderRadius={4}
+                            maxWidth={700}
+                            width="100%"
+                            boxShadow={3}
+                        >
+                            <Typography
+                                variant="h4"
+                                fontWeight="bold"
+                                color="black"
+                                align="center"
+                                sx={{ mb: { xs: 4, md: 6 } }}
+                            >
+                                Edit Program
+                            </Typography>
+                            <TextField
+                                label="Video URL"
+                                variant="outlined"
+                                fullWidth
+                                value={currentProgram?.videoUrl || ''}
+                                onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            />
+                            <TextField
+                                variant="outlined"
+                                label="Title"
+                                fullWidth
+                                value={currentProgram?.title || ''}
+                                onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            />
+                            <TextField
+                                variant="outlined"
+                                label="Duration"
+                                fullWidth
+                                value={currentProgram?.duration || ''}
+                                onChange={(e) => setCurrentProgram({...currentProgram, duration: e.target.value})}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            />
+                            <TextField
+                                label="Category"
+                                select
+                                variant="outlined"
+                                fullWidth
+                                value={currentProgram?.categoryId || ''}
+                                onChange={(e) => setCurrentProgram({...currentProgram, categoryId: e.target.value})}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            >
+                                {categoryData && categoryData.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                label="Description"
+                                variant="outlined"
+                                fullWidth
+                                multiline
+                                rows={4}
+                                value={currentProgram?.description || ''}
+                                onChange={(e) => setCurrentProgram({...currentProgram, description: e.target.value})}
+                                sx={{ mt: 2, bgcolor: 'neutral.200', borderRadius: 2 }}
+                            />
+                            <TextField
+                                label="Channel"
+                                select
+                                variant="outlined"
+                                fullWidth
+                                value={currentProgram?.channelId || ''}
+                                onChange={(e) => setCurrentProgram({...currentProgram, channelId: e.target.value})}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            >
+                                {channel && channel.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                            </TextField>
+                            <TextField
+                                label="Type"
+                                select
+                                variant="outlined"
+                                fullWidth
+                                value={currentProgram?.typeId || ''}
+                                onChange={(e) => setCurrentProgram({...currentProgram, typeId: e.target.value})}
+                                sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                            >
+                                {typeData && typeData.map((items) => (
+                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                ))}
+                            </TextField>
+                            <Box display="flex" justifyContent="flex-end" mt={7} gap={4}>
+                                <Button
+                                    variant="outlined"
+                                    color="secondary"
+                                    onClick={handleEditClose}
+                                    sx={{
+                                        mr: 5,
+                                        variant: "h2",
+                                        width: '160px',
+                                        textTransform: 'none',
+                                        borderColor: 'black',
+                                        color: 'black',
+                                        backgroundColor: "#ffffff",
+                                        fontSize: '1.55rem',
+                                        fontWeight: 'bold',
+                                        borderWidth: 'bold',
+                                        '&:hover': {
+                                            backgroundColor: "#ffffff",
+                                        },
+                                        '&:hover': {
+                                            borderColor: 'black'
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="secondary"
+                                    sx={{
+                                        variant: "h2",
+                                        width: '160px',
+                                        textTransform: 'none',
+                                        backgroundColor: "#0b0b3b",
+                                        fontSize: '1.5rem',
+                                        fontWeight: 'bold',
+                                        '&:hover': {
+                                            backgroundColor: "#0b0b3b",
+                                        },
+                                    }}
+                                >
+                                    Save
+                                </Button>
+                            </Box>
+                        </Box>
+
+                    </Box>
+                </form>
+            </Modal> */}
+
+            <Modal open={viewOpen} onClose={handleViewClose}>
+                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
+                    <Typography variant="h6">View Program</Typography>
+                    <form onSubmit={handleViewProgram}>
+                        <TextField
+                            label="Title"
+                            sx={{ my: 2 }}
+                            value={currentProgram ? currentProgram.title : ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                            fullWidth
+                            required
+                            disabled
+                        />
+                        <TextField
+                            label="Duration"
+                            sx={{ my: 2 }}
+                            value={currentProgram ? currentProgram.duration : ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, duration: e.target.value })}
+                            fullWidth
+                            required
+                            disabled
+                        />
+                        <TextField
+                            label="Description"
+                            sx={{ my: 2 }}
+                            value={currentProgram ? currentProgram.description : ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, description: e.target.value })}
+                            fullWidth
+                            required
+                            disabled
+                        />
+                        <TextField
+                            label="Video URL"
+                            sx={{ my: 2 }}
+                            value={currentProgram ? currentProgram.videoUrl : ''}
+                            onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                            fullWidth
+                            required
+                            disabled
+                        />
+                        <TextField
+                            label="Channel"
+                            sx={{ my: 2 }}
+                            value={currentProgram && currentProgram.channel ? currentProgram.channel.name : ''}
+                            fullWidth
+                            required
+                            disabled
+                        />
+
+                        <TextField
+                            label="Type"
+                            sx={{ my: 2 }}
+                            value={currentProgram && currentProgram.type ? currentProgram.type.name : ''}
+                            fullWidth
+                            required
+                            disabled
+                        />
+
+                        <TextField
+                            label="Category"
+                            sx={{ my: 2 }}
+                            value={currentProgram && currentProgram.category ? currentProgram.category.name : ''}
+                            fullWidth
+                            required
+                            disabled
+                        />
+
+                        <Box mt={2} display="flex" justifyContent="flex-end">
+                            <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
+
+                        </Box>
+                    </form>
+                </Box>
             </Modal>
         </Box>
     );
