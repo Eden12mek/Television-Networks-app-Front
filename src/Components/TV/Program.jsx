@@ -13,7 +13,8 @@ import {
     Divider,
     TextField,
     MenuItem,
-    Modal
+    Modal,
+    Switch
 } from '@mui/material';
 import {
     Search as SearchIcon,
@@ -27,8 +28,34 @@ import {
     Delete as DeleteIcon,
     Visibility as VisibilityIcon
 } from '@mui/icons-material';
+import { styled } from '@mui/material/styles';
 import AddChannel from './AddChannel';
 import AddProgram from './AddProgram';
+
+
+//Switch design
+const CustomSwitch = styled(Switch)(({ theme, checked }) => ({
+    '& .MuiSwitch-switchBase': {
+        '&.Mui-checked': {
+            color: checked ? 'green' : 'red',
+            '& + .MuiSwitch-track': {
+                backgroundColor: checked ? 'green' : 'red',
+            },
+        },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-switchBase.Mui-checked': {
+        color: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-switchBase': {
+        color: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-track': {
+        backgroundColor: checked ? 'green' : 'red',
+    },
+}));
 
 const Program = () => {
     const [programs, setPrograms] = useState([])
@@ -53,8 +80,61 @@ const Program = () => {
     const [currentType, setCurrentType] = useState([]);
     const [currentCategories, setCurrentCategory] = useState([]);
     const [searchQuery, setSearchQuery] = useState('');
+    const [deleteOpen, setDeleteOpen] = useState('');
+    const [deleteProgramId, setDeleteProgramId] = useState('');
 
 
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
+
+    const [itemsPerPage, setItemsPerPage] = useState(7);
+
+    const [totalPages, setTotalPages] = useState();
+
+    useEffect(() => {
+        const calculateTotalPages = () => {
+            setTotalPages(
+                Math.ceil(
+                    programs ? programs.length / itemsPerPage : []
+                )
+            );
+        };
+        calculateTotalPages();
+    }, [programs, itemsPerPage]);
+
+    // Function to handle next page button click
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    // Function to handle previous page button click
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+    // Filter channels based on search query
+    const filteredPrograms = searchQuery
+        ? programs.filter(program => program.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        : programs;
+
+
+    // Calculate data for current page
+    const indexOfLastItem = currentPage * itemsPerPage;
+
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const currentPageData = programs
+        ? filteredPrograms.slice(indexOfFirstItem, indexOfLastItem)
+        : [];
+
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+        // Reset current page to 1 when search query changes
+        setCurrentPage(1);
+    };
 
 
     //fetchPrograms   
@@ -69,7 +149,6 @@ const Program = () => {
     useEffect(() => {
         fetchPrograms();
     }, []);
-    console.log(programs);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -86,9 +165,14 @@ const Program = () => {
     const handleChange = (event) => {
         setTitle(event.target.value);
     };
-    const handleSearchInputChange = (event) => {
-        setSearchQuery(event.target.value);
+
+    const handleDeleteOpen = (id) => {
+        setDeleteProgramId(id);
+        setDeleteOpen(true);
     };
+    const handleDeleteClose = () => setDeleteOpen(false);
+
+
 
     //channels
     const fetchChannels = async () => {
@@ -193,14 +277,21 @@ const Program = () => {
         try {
             await axios.delete(`http://localhost:4000/General/movies/delete/${id}`);
             setPrograms((prevPrograms) => prevPrograms.filter(program => program.id !== id));
+            handleDeleteClose();
         } catch (error) {
             console.error('Error deleting channel:', error);
         }
     };
-    // Filter channels based on search query
-    const filteredPrograms = searchQuery
-        ? programs.filter(program => program.title.toLowerCase().includes(searchQuery.toLowerCase()))
-        : programs;
+
+    //Toggle suspended
+    const handleToggleSuspend = async (id) => {
+        try {
+            const response = await axios.get(`http://localhost:4000/General/movies/changestatus/${id}`);
+            setPrograms((prevPrograms) => prevPrograms.map(program => program.id === id ? response.data.updatedProgram : program));
+        } catch (error) {
+            console.error('Error toggling suspend:', error);
+        }
+    };
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -311,20 +402,31 @@ const Program = () => {
                     <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
                         <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
                             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
-                                {/* <Box width={940} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
-                                    <Box display="flex" gap={1} justifyContent="space-between">
-                                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
-                                        <Typography variant='h6'>Search</Typography>
-                                    </Box>
-                                </Box> */}
                                 <TextField
-                                    variant="outlined"
+                                    variant="standard"
                                     size="small"
                                     placeholder="Search"
                                     InputProps={{
                                         startAdornment: (
-                                            <SearchIcon sx={{ mr: 1 }} />
+                                            <SearchIcon sx={{ mr: 1, ml: 1 }} />
                                         ),
+                                        sx: {
+                                            pr: 94,
+                                            bgcolor: 'grey.100',
+                                            height: '50px',
+                                            // Remove default bottom border
+                                            '&::before': {
+                                                borderBottom: 'none',
+                                            },
+                                            // Ensure no bottom border when focused
+                                            '&::after': {
+                                                borderBottom: 'none',
+                                            },
+                                            // Ensure no bottom border on hover
+                                            '&:hover:not(.Mui-disabled)::before': {
+                                                borderBottom: 'none',
+                                            },
+                                        }
                                     }}
                                     onChange={handleSearchInputChange}
                                     value={searchQuery}
@@ -359,133 +461,193 @@ const Program = () => {
                             <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: 2.5 }} />
                             <Grid item container justifyContent="space-between" ml={4} >
 
-                                <Typography mr={-15} variant="h6">Id</Typography>
-                                <Typography mr={-15} variant="h6">Title</Typography>
-                                <Typography mr={-10} variant="h6">Duration</Typography>
-                                <Typography mr={-10} variant="h6">Description</Typography>
-                                <Typography mr={-10} variant="h6">Status</Typography>
-                                <Typography mr={15} variant="h6">Action</Typography>
+                                <Typography   variant="h6">Id</Typography>
+                                <Typography sx={{  mr:10, minWidth: 150 }} variant="h6">Title</Typography>
+                                <Typography   sx={{ ml:-17, minWidth: 100 }} variant="h6">Duration</Typography>
+                                <Typography  sx={{ minWidth: 250 }} mr={-17} variant="h6">Description</Typography>
+                                <Typography  variant="h6">Status</Typography>
+                                <Typography  variant="h6">Action</Typography>
                             </Grid>
                             <Divider sx={{ mt: 3, mb: 4, mx: 1, ml: 2, mr: 2.5 }} />
-                            {filteredPrograms.map(program => (
-                                <Grid key={program.id} item container justifyContent="space-between" alignItems="center" ml={4} >
-                                    <Typography>{program.id}</Typography>
-                                    <Typography ml={-14}>{program.title}</Typography>
-                                    <Typography ml={-15}>{program.duration}</Typography>
-                                    <Typography mr={-18} ml={-5}>{program.description}</Typography>
-                                    <Box
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            bgcolor: isActive ? 'green.100' : 'red.100',
-                                            mr: -15
-                                        }}
-                                    // onClick={handleClick}
-                                    >
-                                        <Box sx={{ display: 'flex', alignItems: 'center', p: 1, borderRadius: 1, mr: 2 }}>
-                                            {isActive ? (
+                            {currentPageData.map(program => (
+                                <Grid key={program.id} item container justifyContent="space-between" alignItems="center" ml={4} sx={{  paddingTop: 1, paddingBottom: 1 }}>
+                                    <Typography sx={{ minWidth: 100 }}>{program.id}</Typography>
+                                    <Typography sx={{ minWidth: 200 }}>{program.title}</Typography>
+                                    <Typography sx={{ minWidth: 150 }}>{program.duration}</Typography>
+                                    <Typography sx={{ minWidth: 250 }}>{program.description}</Typography>
+                                    <Grid item xs={2} container justifyContent="center">
+                                        <Button
+                                            variant='contained'
+                                            sx={{
+                                                bgcolor: program.suspend ? '#aaf0c9' : '#ffccc5',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                minWidth: 150,
+                                                '&:hover': {
+                                                    bgcolor: program.suspend ? '#aaf0c9' : '#ffccc5',
+                                                },
+                                            }}
+                                        >
+                                            {program.suspend ? (
                                                 <>
-                                                    <DoneIcon color="success" />
-                                                    <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
+                                                    <DoneIcon sx={{ color: 'green' }} />
+                                                    <Typography color='green' sx={{ ml: 1, textTransform: 'capitalize' }}>Active</Typography>
                                                 </>
-
                                             ) : (
                                                 <>
-                                                    <CloseIcon color="success" />
-                                                    <Typography sx={{ ml: 1, color: 'green.800' }}>Deactive</Typography>
+                                                    <CloseIcon sx={{ color: 'red' }} />
+                                                    <Typography color='red' sx={{ ml: 1, textTransform: 'capitalize' }}>Deactive</Typography>
                                                 </>
                                             )}
-                                        </Box>
-                                        <Avatar sx={{ bgcolor: isActive ? 'green.800' : 'red.800', width: 65, height: 65 }} />
-                                    </Box>
-                                    <Box mr={10} sx={{ display: 'flex', alignItems: 'center' }}>
+                                            <CustomSwitch checked={program.suspend} onChange={() => handleToggleSuspend(program.id)} />
+                                        </Button>
+                                    </Grid>
+                                    <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                         <IconButton onClick={() => handleViewOpen(program)}>
                                             <VisibilityIcon />
                                         </IconButton>
                                         <IconButton onClick={() => handleEditOpen(program)}>
                                             <EditIcon />
                                         </IconButton>
-                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteProgram(program.id)}>
+                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteOpen(program.id)}>
                                             <DeleteIcon />
                                         </IconButton>
                                     </Box>
                                 </Grid>
                             ))}
+
                         </Box>
+                    </Box>
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10 }}>
+                        <Button
+                            variant="contained"
+                            disabled={currentPage === 1}
+                            onClick={handlePreviousPage}
+                            sx={{ bgcolor: '#030327', color: 'white', '&:hover': { bgcolor: '#0b0b3b' } }}
+                        >
+                            Prev
+                        </Button>
+                        <Typography variant="body1" sx={{ mx: 5 }}>{currentPage} of {totalPages}</Typography>
+                        <Button
+                            variant="contained"
+                            disabled={currentPage === totalPages}
+                            onClick={handleNextPage}
+                            sx={{ bgcolor: '#030327', color: 'white', '&:hover': { bgcolor: '#0b0b3b' } }}
+                        >
+                            Next
+                        </Button>
                     </Box>
                 </Paper>
             </Box>
-            {/*  Add channel modal     */}
+            {/*  Add program modal     */}
             <Modal
                 open={open}
                 onClose={handleClose}
                 aria-labelledby="add-program-modal-title"
                 aria-describedby="add-program-modal-description"
             >
-                <form >
+
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="100vh"
+                >
                     <Box
+                        component="form"
+                        onSubmit={handleAddProgram}
                         display="flex"
-                        justifyContent="center"
-                        alignItems="center"
-                        minHeight="100vh"
+                        flexDirection="column"
+                        px={{ xs: 2, md: 8 }}
+                        py={{ xs: 8, md: 5 }}
+                        bgcolor="white"
+                        borderRadius={4}
+                        maxWidth={1000}
+                        width="100%"
+                        boxShadow={3}
                     >
-                        <Box
-                            component="form"
-                            onSubmit={handleAddProgram}
-                            display="flex"
-                            flexDirection="column"
-                            px={{ xs: 2, md: 8 }}
-                            py={{ xs: 8, md: 5 }}
-                            bgcolor="white"
-                            borderRadius={4}
-                            maxWidth={700}
-                            width="100%"
-                            boxShadow={3}
+                        <Typography
+                            variant="h3"
+                            fontWeight="bold"
+                            color="black"
+                            align="center"
+                            sx={{ mb: { xs: 4, md: 6 } }}
                         >
-                            <Typography
-                                variant="h4"
-                                fontWeight="bold"
-                                color="black"
-                                align="center"
-                                sx={{ mb: { xs: 4, md: 6 } }}
-                            >
-                                Add Program
-                            </Typography>
-                            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+                            Add Program
+                        </Typography>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Video URL</Typography>
                                 <TextField
-                                    label="Video URL"
-                                    variant="outlined"
-                                    fullWidth
+                                    variant="standard"
+                                    label=""
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
                                     value={videoUrl}
                                     onChange={(e) => setVideoUrl(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
-                                />
-                                <TextField
-                                    variant="outlined"
-                                    label="Title"
-                                    fullWidth
-                                    value={title}
-                                    onChange={(e) => setTitle(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
                                 />
                             </Box>
-                            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Title</Typography>
                                 <TextField
-                                    variant="outlined"
-                                    label="Duration"
+                                    variant="standard"
+                                    label=""
                                     fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={title}
+                                    onChange={(e) => setTitle(e.target.value)}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                />
+                            </Box>
+                        </Box>
+
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flex="1">
+                                <Typography variant="h5">Duration</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
                                     value={duration}
                                     onChange={(e) => setDuration(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
                                 />
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flex="1">
+                                <Typography variant="h5">Category</Typography>
                                 <TextField
-                                    label="Category"
+                                    variant="standard"
                                     select
-                                    variant="outlined"
+                                    label=" Select..."
                                     fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    InputLabelProps={{
+                                        shrink: false,
+                                        sx: {
+                                            ml: 3,
+                                            typography: 'h5'
+                                        }
+                                    }}
                                     value={categoryId}
                                     onChange={(e) => setCategoryId(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
                                 >
                                     {
                                         categoryData && categoryData.map((items) => (
@@ -494,25 +656,23 @@ const Program = () => {
                                         ))}
                                 </TextField>
                             </Box>
-                            <TextField
-                                label="Description"
-                                variant="outlined"
-                                fullWidth
-                                multiline
-                                rows={4}
-                                value={description}
-                                onChange={(e) => setDescription(e.target.value)}
-                                sx={{ mt: 2, bgcolor: 'neutral.200', borderRadius: 2 }}
-                            />
-                            <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                        </Box>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Channel</Typography>
                                 <TextField
-                                    label="Channel"
+                                    label="Select..."
                                     select
-                                    variant="outlined"
+                                    variant="standard"
                                     fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
                                     value={channelId}
                                     onChange={(e) => setChannelId(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
                                 >
                                     {
                                         channel && channel.map((items) => (
@@ -521,14 +681,22 @@ const Program = () => {
 
                                         ))}
                                 </TextField>
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Type</Typography>
                                 <TextField
-                                    label="Type"
+                                    label="Select..."
                                     select
-                                    variant="outlined"
+                                    variant="standard"
                                     fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
                                     value={typeId}
                                     onChange={(e) => setTypeId(e.target.value)}
-                                    sx={{ bgcolor: 'neutral.200', borderRadius: 2 }}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
                                 >
                                     {
                                         typeData && typeData.map((items) => (
@@ -537,54 +705,63 @@ const Program = () => {
                                         ))}
                                 </TextField>
                             </Box>
-                            <Box display="flex" justifyContent="flex-end" mt={7} gap={4} >
-                                <Button
-                                    variant="outlined"
-                                    color="secondary"
-                                    onClick={handleClose}
-                                    sx={{
-                                        mr: 5,
-                                        variant: "h2",
-                                        width: '160px',
-                                        textTransform: 'none',
-                                        borderColor: 'black',
-                                        color: 'black',
+                        </Box>
+                        <Typography variant="h5">Description</Typography>
+                        <TextField
+                            label=""
+                            variant="standard"
+                            fullWidth
+                            multiline
+                            rows={4}
+                            value={description}
+                            onChange={(e) => setDescription(e.target.value)}
+                            sx={{ mt: 2, bgcolor: 'grey.200', borderRadius: 2 }}
+                        />
+                        <Box display="flex" justifyContent="flex-end" mt={7} gap={4} >
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleClose}
+                                sx={{
+                                    mr: 5,
+                                    variant: "h2",
+                                    width: '160px',
+                                    textTransform: 'none',
+                                    borderColor: 'black',
+                                    color: 'black',
+                                    backgroundColor: "#ffffff",
+                                    fontSize: '1.55rem',
+                                    fontWeight: 'bold',
+                                    border: '2.5px solid black',
+                                    '&:hover': {
                                         backgroundColor: "#ffffff",
-                                        fontSize: '1.55rem',
-                                        fontWeight: 'bold',
-                                        borderWidth: 'bold',
-                                        '&:hover': {
-                                            backgroundColor: "#ffffff",
-                                        },
-                                        '&:hover': {
-                                            borderColor: 'black'
-                                        },
-                                    }}
-                                >
-                                    Cancel
-                                </Button>
-                                <Button
-                                    type="submit"
-                                    variant="contained"
-                                    color="secondary"
-                                    sx={{
-                                        variant: "h2",
-                                        width: '160px',
-                                        textTransform: 'none',
+                                        borderColor: 'black'
+                                    },
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    variant: "h2",
+                                    width: '160px',
+                                    textTransform: 'none',
+                                    backgroundColor: "#0b0b3b",
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
                                         backgroundColor: "#0b0b3b",
-                                        fontSize: '1.5rem',
-                                        fontWeight: 'bold',
-                                        '&:hover': {
-                                            backgroundColor: "#0b0b3b",
-                                        },
-                                    }}
-                                >
-                                    Add
-                                </Button>
-                            </Box>
+                                    },
+                                }}
+                            >
+                                Add
+                            </Button>
                         </Box>
                     </Box>
-                </form>
+                </Box>
             </Modal>
             {/* // Edit channel modal */}
             <Modal open={editOpen} onClose={handleEditClose}>
@@ -744,7 +921,36 @@ const Program = () => {
                     </form>
                 </Box>
             </Modal>
-        </Box>
+
+            <Modal open={deleteOpen} onClose={handleDeleteClose}>
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                }}
+                >
+                    <Typography variant='h6' mb={2}>
+                        Confirm Deletion
+                    </Typography>
+                    <Typography variant='body1' mb={2}>
+                        Are you sure you want to delete this program?
+                    </Typography>
+                    <Box display="flex" justifyContent='flex-end' gap={2}>
+                        <Button variant='outlined' color='primary' onClick={handleDeleteClose}>
+                            No
+                        </Button>
+                        <Button variant='contained' color='error' onClick={() => handleDeleteProgram(deleteProgramId)}>
+                            Yes
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal >
+        </Box >
     );
 };
 

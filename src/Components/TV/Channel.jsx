@@ -11,7 +11,9 @@ import {
     Container,
     Divider,
     Modal,
-    TextField
+    TextField,
+    FormControlLabel,
+    Switch
 } from '@mui/material';
 import {
     Search as SearchIcon,
@@ -26,18 +28,99 @@ import {
     Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import axios from 'axios';
+import { styled } from '@mui/material/styles';
+import { grey } from '@mui/material/colors';
+
+
+
+const CustomSwitch = styled(Switch)(({ theme, checked }) => ({
+    '& .MuiSwitch-switchBase': {
+        '&.Mui-checked': {
+            color: checked ? 'green' : 'red',
+            '& + .MuiSwitch-track': {
+                backgroundColor: checked ? 'green' : 'red',
+            },
+        },
+    },
+    '& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track': {
+        backgroundColor: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-switchBase.Mui-checked': {
+        color: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-switchBase': {
+        color: checked ? 'green' : 'red',
+    },
+    '& .MuiSwitch-track': {
+        backgroundColor: checked ? 'green' : 'red',
+    },
+}));
+
+
 
 const Channel = () => {
     const [open, setOpen] = useState(false);
     const [editOpen, setEditOpen] = useState(false);
     const [viewOpen, setViewOpen] = useState(false);
+    const [deleteOpen, setDeleteOpen] = useState(false);
     const [channels, setChannels] = useState([]);
-    const [isActive, setIsActive] = useState(true);
     const [name, setName] = useState('');
     const [currentChannel, setCurrentChannel] = useState(null);
+    const [deleteChannelId, setDeleteChannelId] = useState(null);
     const [searchQuery, setSearchQuery] = useState('');
 
+    //pagination
+    const [currentPage, setCurrentPage] = useState(1);
 
+    const [itemsPerPage, setItemsPerPage] = useState(7);
+
+    const [totalPages, setTotalPages] = useState();
+
+    useEffect(() => {
+        const calculateTotalPages = () => {
+            setTotalPages(
+                Math.ceil(
+                    channels ? channels.length / itemsPerPage : []
+                )
+            );
+        };
+        calculateTotalPages();
+    }, [channels, itemsPerPage]);
+
+    // Function to handle next page button click
+    const handleNextPage = () => {
+        if (currentPage < totalPages) {
+            setCurrentPage(currentPage + 1);
+        }
+    };
+
+    // Function to handle previous page button click
+    const handlePreviousPage = () => {
+        if (currentPage > 1) {
+            setCurrentPage(currentPage - 1);
+        }
+    };
+
+    // Filter channels based on search query
+    const filteredChannels = searchQuery
+        ? channels.filter(channel => channel.name.toLowerCase().includes(searchQuery.toLowerCase()))
+        : channels;
+
+
+    // Calculate data for current page
+    const indexOfLastItem = currentPage * itemsPerPage;
+
+    const indexOfFirstItem = indexOfLastItem - itemsPerPage;
+
+    const currentPageData = channels
+        ? filteredChannels.slice(indexOfFirstItem, indexOfLastItem)
+        : [];
+
+    const handleSearchInputChange = (event) => {
+        setSearchQuery(event.target.value);
+        // Reset current page to 1 when search query changes
+        setCurrentPage(1);
+    };
 
     //fetchchannels
     const fetchChannels = async () => {
@@ -51,7 +134,6 @@ const Channel = () => {
     useEffect(() => {
         fetchChannels();
     }, []);
-    console.log(channels);
 
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -68,9 +150,13 @@ const Channel = () => {
     const handleChange = (event) => {
         setName(event.target.value);
     };
-    const handleSearchInputChange = (event) => {
-        setSearchQuery(event.target.value);
+
+    const handleDeleteOpen = (id) => {
+        setDeleteChannelId(id);
+        setDeleteOpen(true);
     };
+    const handleDeleteClose = () => setDeleteOpen(false);
+
 
     //  PostChannels
     const handleAddChannel = async (event) => {
@@ -101,11 +187,13 @@ const Channel = () => {
         try {
             await axios.delete(`http://localhost:4000/General/channel/delete/${id}`);
             setChannels((prevChannels) => prevChannels.filter(channel => channel.id !== id));
+            handleDeleteClose();
         } catch (error) {
             console.error('Error deleting channel:', error);
         }
     };
-    //  StatusChannels
+
+    //Toggle suspended
     const handleToggleSuspend = async (id) => {
         try {
             const response = await axios.get(`http://localhost:4000/General/channel/changestatus/${id}`);
@@ -114,6 +202,7 @@ const Channel = () => {
             console.error('Error toggling suspend:', error);
         }
     };
+
     //  ViewChannels
     const handleViewChannel = async (event) => {
         event.preventDefault();
@@ -125,11 +214,7 @@ const Channel = () => {
             console.error('Error viewing channel:', error);
         }
     };
-
-    // Filter channels based on search query
-    const filteredChannels = searchQuery
-        ? channels.filter(channel => channel.name.toLowerCase().includes(searchQuery.toLowerCase()))
-        : channels;
+    console.log(channels)
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -238,20 +323,32 @@ const Channel = () => {
                     <Box display="flex" flexDirection="column" width="100%" maxWidth="100%">
                         <Box display="flex" flexDirection="column" pl={4} pr={2.5}>
                             <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} p={1} mx={1}>
-                                {/* <Box width={940} display="flex" flexDirection="column" justifyContent="center" alignItems="start" p={2} bgcolor="grey.200" color="text.secondary" gap={2}>
-                                    <Box display="flex" gap={1} justifyContent="space-between">
-                                        <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/0348e7a71dcadd27cfa56bac7d3ed123f91b8592105f71f114e0e955b0a5a56d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Search Icon" style={{ width: 25, height: 25 }} />
-                                        <Typography variant="h6">Search</Typography>
-                                    </Box>
-                                </Box> */}
+
                                 <TextField
-                                    variant="outlined"
+                                    variant="standard"
                                     size="small"
                                     placeholder="Search"
                                     InputProps={{
                                         startAdornment: (
-                                            <SearchIcon sx={{ mr: 1 }} />
+                                            <SearchIcon sx={{ mr: 1, ml: 1 }} />
                                         ),
+                                        sx: {
+                                            pr: 94,
+                                            bgcolor: 'grey.100',
+                                            height: '50px',
+                                            // Remove default bottom border
+                                            '&::before': {
+                                                borderBottom: 'none',
+                                            },
+                                            // Ensure no bottom border when focused
+                                            '&::after': {
+                                                borderBottom: 'none',
+                                            },
+                                            // Ensure no bottom border on hover
+                                            '&:hover:not(.Mui-disabled)::before': {
+                                                borderBottom: 'none',
+                                            },
+                                        }
                                     }}
                                     onChange={handleSearchInputChange}
                                     value={searchQuery}
@@ -283,81 +380,170 @@ const Channel = () => {
                                     </Button>
                                 </Box>
                             </Box>
-                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: 3 }} />
+                            <Divider sx={{mt: 2, mb: 3, mx: 1, ml: 2, mr: 3}} />
                             <Grid item container justifyContent="space-between" ml={3} >
                                 <Typography mr={-27.5} variant="h6">Name</Typography>
                                 <Typography mr={-30} variant="h6">Status</Typography>
-                                <Typography mr={100} variant="h6">Action</Typography>
+                                <Typography mr={35} variant="h6">Action</Typography>
                             </Grid>
                             <Divider sx={{ mt: 3, mb: 5, mx: 1, ml: 2, mr: 3 }} />
-                            {filteredChannels.map(channel => (
-                                <Grid key={channel.id} item container justifyContent="space-between" alignItems="center" ml={3} mr={-15}>
-                                    <Typography mr={-27.5} variant="h5">{channel.name}</Typography>
-                                    <Box
-                                        mr={-30}
-                                        sx={{
-                                            display: 'flex',
-                                            alignItems: 'center',
-                                            cursor: 'pointer',
-                                            bgcolor: isActive ? 'green.100' : 'red.100',
-                                            p: 1,
-                                            borderRadius: 1,
-                                            mr: 2,
-                                        }}
-                                    >
-                                        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                                            <IconButton onClick={() => handleToggleSuspend(channel.id)}>
-                                                {channel.isSuspended ? (
-                                                    <>
-                                                        <DoneIcon color="success" />
-                                                        <Typography sx={{ ml: 1, color: 'green.800' }}>Active</Typography>
-                                                    </>
-                                                ) : (
-                                                    <>
-                                                        <CloseIcon color="error" />
-                                                        <Typography sx={{ ml: 1, color: 'red.800' }}>Inactive</Typography>
-                                                    </>
-                                                )}
+                            {currentPageData.map(channel => (
+                                <Grid key={channel.id} item container alignItems="center" spacing={3} sx={{ mb: 2, ml: 0.5 }}>
+                                    <Grid item xs={4}>
+                                        <Typography variant="h5">{channel.name}</Typography>
+                                    </Grid>
+                                    <Grid item xs={2} container justifyContent="center">
+                                        <Button
+                                            variant='contained'
+                                            sx={{
+                                                bgcolor: channel.suspend ? '#aaf0c9' : '#ffccc5',
+                                                display: 'flex',
+                                                alignItems: 'center',
+                                                minWidth: 150,
+                                                '&:hover': {
+                                                    bgcolor: channel.suspend ? '#aaf0c9' : '#ffccc5',
+                                                },
+                                            }}
+                                        >
+                                            {channel.suspend ? (
+                                                <>
+                                                    <DoneIcon sx={{ color: 'green' }} />
+                                                    <Typography color='green' sx={{ ml: 1, textTransform: 'capitalize' }}>Active</Typography>
+
+                                                </>
+                                            ) : (
+                                                <>
+                                                    <CloseIcon sx={{ color: 'red' }} />
+                                                    <Typography color='red' sx={{ ml: 1, textTransform: 'capitalize' }}>Deactive</Typography>
+
+                                                </>
+                                            )}
+                                            <CustomSwitch checked={channel.suspend} onChange={() => handleToggleSuspend(channel.id)} />
+
+                                        </Button>
+
+                                    </Grid>
+                                    <Grid item xs={6} container justifyContent="flex-end">
+                                        <Box sx={{ display: 'flex', alignItems: 'center', mr: 31 }}>
+                                            <IconButton onClick={() => handleViewOpen(channel)}>
+                                                <VisibilityIcon />
+                                            </IconButton>
+                                            <IconButton onClick={() => handleEditOpen(channel)}>
+                                                <EditIcon />
+                                            </IconButton>
+                                            <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteOpen(channel.id)}>
+                                                <DeleteIcon />
                                             </IconButton>
                                         </Box>
-
-                                    </Box>
-                                    <Box mr={95} sx={{ display: 'flex', alignItems: 'center' }}>
-                                        <IconButton onClick={() => handleViewOpen(channel)}>
-                                            <VisibilityIcon />
-                                        </IconButton>
-                                        <IconButton onClick={() => handleEditOpen(channel)}>
-                                            <EditIcon />
-                                        </IconButton>
-                                        <IconButton sx={{ color: 'red' }} onClick={() => handleDeleteChannel(channel.id)}>
-                                            <DeleteIcon />
-                                        </IconButton>
-                                        {/* <IconButton onClick={() => handleToggleSuspend(channel.id)}>
-                                            {channel.isSuspended ? <DoneIcon /> : <CloseIcon />}
-                                        </IconButton> */}
-                                    </Box>
+                                    </Grid>
                                 </Grid>
                             ))}
+
+
                         </Box>
                     </Box>
+
+                    <Box sx={{ display: 'flex', justifyContent: 'center', mt: 10, mr: 18 }}>
+                        <Button
+                            variant="contained"
+                            disabled={currentPage === 1}
+                            onClick={handlePreviousPage}
+                            sx={{ bgcolor: '#030327', color: 'white', '&:hover': { bgcolor: '#0b0b3b' } }}
+                        >
+                            Prev
+                        </Button>
+                        <Typography variant="body1" sx={{ mx: 5 }}>{currentPage} of {totalPages}</Typography>
+                        <Button
+                            variant="contained"
+                            disabled={currentPage === totalPages}
+                            onClick={handleNextPage}
+                            sx={{ bgcolor: '#030327', color: 'white', '&:hover': { bgcolor: '#0b0b3b' } }}
+                        >
+                            Next
+                        </Button>
+                    </Box>
+
                 </Paper>
+
             </Box>
             <Modal open={open} onClose={handleClose}>
                 <form onSubmit={handleAddChannel}>
                     <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
-                        <Box bgcolor="white" borderRadius={2} p={4} boxShadow={3}>
-                            <Typography variant="h4" mb={2}>Add Channel</Typography>
+                        <Box bgcolor="white" width={1000} height={380} borderRadius={3} p={4} boxShadow={5}>
+                            <Box display="flex" justifyContent="center">
+                                <Typography variant="h3" mb={8} sx={{ fontWeight: 'bold' }}>Add Channel</Typography>
+                            </Box>
+                            <Typography variant="h5" mb={1} ml={35}>Name</Typography>
                             <TextField
-                                label="Channel Name"
+                                variant="standard"
+                                label=""
                                 name="name"
+                                InputProps={{
+
+                                    sx: {
+                                        ml: 35,
+                                        pr: 34,
+                                        bgcolor: 'grey.100',
+                                        height: '50px',
+                                        borderRadius: '8px 8px 0 0',
+                                        '&::before': {
+                                            borderBottom: '2px solid black',  // Bold bottom border
+                                        },
+                                        '&::after': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                        },
+                                        '&:hover:not(.Mui-disabled)::before': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                        },
+                                    }
+                                }}
+
                                 value={name}
                                 onChange={handleChange}
-                                fullWidth
-                                margin="normal"
                             />
-                            <Box display="flex" justifyContent="space-between" mt={2}>
-                                <Button variant="outlined" onClick={handleClose}>Cancel</Button>
-                                <Button type="submit" variant="contained" color="primary">Add</Button>
+
+                            <Box display="flex" justifyContent="space-between" mt={9} gap={4}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={handleClose}
+                                    sx={{
+                                        ml: 74,
+                                        variant: "h2",
+                                        width: '140px',
+                                        textTransform: 'none',
+                                        borderColor: 'black',
+                                        color: 'black',
+                                        backgroundColor: "#ffffff",
+                                        fontSize: '1.55rem',
+                                        fontWeight: 'bold',
+                                        border: '2.5px solid black',
+                                        '&:hover': {
+                                            backgroundColor: "#ffffff",
+                                            borderColor: 'black'
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        mr: 6,
+                                        variant: "h2",
+                                        width: '140px',
+                                        textTransform: 'none',
+                                        backgroundColor: "#0b0b3b",
+                                        fontSize: '1.5rem',
+                                        fontWeight: 'bold',
+                                        '&:hover': {
+                                            backgroundColor: "#0b0b3b",
+                                        },
+                                    }}
+                                >
+                                    Add
+                                </Button>
                             </Box>
                         </Box>
                     </Box>
@@ -404,8 +590,36 @@ const Channel = () => {
                     </form>
                 </Box>
             </Modal>
+            <Modal open={deleteOpen} onClose={handleDeleteClose}>
+                <Box sx={{ ...modalStyle }}>
+                    <Typography variant="h6" mb={2}>
+                        Confirm Deletion
+                    </Typography>
+                    <Typography variant="body1" mb={2}>
+                        Are you sure you want to delete this channel?
+                    </Typography>
+                    <Box display="flex" justifyContent="flex-end" gap={2}>
+                        <Button variant="outlined" color="primary" onClick={handleDeleteClose}>
+                            Cancel
+                        </Button>
+                        <Button variant="contained" color="error" onClick={() => handleDeleteChannel(deleteChannelId)}>
+                            Delete
+                        </Button>
+                    </Box>
+                </Box>
+            </Modal>
         </Box>
     );
+};
+const modalStyle = {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: 400,
+    bgcolor: 'background.paper',
+    boxShadow: 24,
+    p: 4,
 };
 
 
