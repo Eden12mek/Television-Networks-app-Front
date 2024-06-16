@@ -314,7 +314,7 @@ const Channel = () => {
                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                             sx={{ width: 40, height: 40 }}
                         />
-                        <Link to="/logout">
+                        <Link to="/login">
                             <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
                         </Link>
                     </Box>
@@ -380,7 +380,7 @@ const Channel = () => {
                                     </Button>
                                 </Box>
                             </Box>
-                            <Divider sx={{mt: 2, mb: 3, mx: 1, ml: 2, mr: 3}} />
+                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: 3 }} />
                             <Grid item container justifyContent="space-between" ml={3} >
                                 <Typography mr={-27.5} variant="h6">Name</Typography>
                                 <Typography mr={-30} variant="h6">Status</Typography>
@@ -551,55 +551,179 @@ const Channel = () => {
             </Modal>
 
             <Modal open={editOpen} onClose={handleEditClose}>
-                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
-                    <Typography variant="h6">Edit Channel</Typography>
-                    <form onSubmit={handleEditChannel}>
-                        <TextField
-                            label="Name"
-                            fullWidth
-                            sx={{ my: 2 }}
-                            value={currentChannel?.name || ''}
-                            onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
-                        />
-                        <Button onClick={handleEditClose} sx={{ mr: 1 }}>Cancel</Button>
-                        <Button variant="contained" color="primary" type="submit">
-                            Save
-                        </Button>
-                    </form>
-                </Box>
+                <form onSubmit={handleEditChannel}>
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                        <Box bgcolor="white" width={900} height={350} borderRadius={3} p={4} boxShadow={5}>
+                            <Box display="flex" justifyContent="center">
+                                <Typography variant="h4" mb={8} sx={{ fontWeight: 'bold' }}>Edit Channel</Typography>
+                            </Box>
+                            <Typography variant="h5" mb={1} ml={32}>Name</Typography>
+                            <TextField
+                                variant="standard"
+                                label=""
+                                name="name"
+                                fullWidth
+                                InputProps={{
+
+                                    sx: {
+                                        ml: 32,
+                                        pl: 4,
+                                        bgcolor: 'grey.100',
+                                        height: '50px',
+                                        width: '400px',
+                                        borderRadius: '8px 8px 0 0',
+                                        '&::before': {
+                                            borderBottom: '2px solid black',  // Bold bottom border
+                                        },
+                                        '&::after': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                        },
+                                        '&:hover:not(.Mui-disabled)::before': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                        },
+                                    }
+                                }}
+                                value={currentChannel?.name || ''}
+                                onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
+                            />
+                            <Box display="flex" justifyContent="space-between" mt={9} gap={4}>
+                                <Button
+                                    variant="outlined"
+                                    onClick={handleEditClose}
+                                    sx={{
+                                        ml: 64,
+                                        variant: "h2",
+                                        width: '140px',
+                                        textTransform: 'none',
+                                        borderColor: 'black',
+                                        color: 'black',
+                                        backgroundColor: "#ffffff",
+                                        fontSize: '1.55rem',
+                                        fontWeight: 'bold',
+                                        border: '2.5px solid black',
+                                        '&:hover': {
+                                            backgroundColor: "#ffffff",
+                                            borderColor: 'black'
+                                        },
+                                    }}
+                                >
+                                    Cancel
+                                </Button>
+                                <Button
+                                    type="submit"
+                                    variant="contained"
+                                    color="primary"
+                                    sx={{
+                                        mr: 6,
+                                        variant: "h2",
+                                        width: '140px',
+                                        textTransform: 'none',
+                                        backgroundColor: "#0b0b3b",
+                                        fontSize: '1.5rem',
+                                        fontWeight: 'bold',
+                                        '&:hover': {
+                                            backgroundColor: "#0b0b3b",
+                                        },
+                                    }}
+                                >
+                                    Save
+                                </Button>
+                            </Box>
+                        </Box>
+                    </Box>
+                </form>
+
             </Modal>
             <Modal open={viewOpen} onClose={handleViewClose}>
-                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
-                    <Typography variant="h6">View Channel</Typography>
-                    <form onSubmit={handleViewChannel}>
-                        <TextField
-                            label="Name"
-                            sx={{ my: 2 }}
-                            value={currentChannel ? currentChannel.name : ''}
-                            onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
-                            fullWidth
-                            required
-                            disabled
-                        />
-                        <Box mt={2} display="flex" justifyContent="flex-end">
-                            <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
-                            <Button variant="contained" color="primary" type="submit">
-                                Save
-                            </Button>
+                <form onSubmit={handleViewChannel}>
+                    <Box display="flex" justifyContent="center" alignItems="center" height="100vh">
+                        <Box bgcolor="white" width={800} height={300} borderRadius={3} p={4} boxShadow={5}>
+                            <Box display="flex" justifyContent="center">
+                                <Typography variant="h4" mb={8} sx={{ fontWeight: 'bold' }}>View Channel</Typography>
+                            </Box>
+                            <Typography variant="h5" mb={1} ml={25}>Name</Typography>
+                            <TextField
+                                variant="standard"
+                                label=""
+                                name="name"
+                                InputProps={{
+
+                                    sx: {
+                                        ml: 25,
+                                        pl: 20,
+                                        fontWeight: 'bold',
+                                        bgcolor: 'grey.100',
+                                        height: '50px',
+                                        width: '400px',
+                                        borderRadius: '8px 8px 0 0',
+                                        '&::before': {
+                                            borderBottom: '2px solid black',  // Bold bottom border
+                                        },
+                                        '&::after': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                        },
+                                        '&:hover:not(.Mui-disabled)::before': {
+                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                        },
+                                    }
+                                }}
+                                value={currentChannel ? currentChannel.name : ''}
+                                onChange={(e) => setCurrentChannel({ ...currentChannel, name: e.target.value })}
+                                fullWidth
+                                required
+                                disabled
+                            />
+                            <Box display="flex" justifyContent="space-between" mt={7} gap={4}>
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    onClick={handleViewClose}
+                                    sx={{
+                                        ml: 76,
+                                        variant: "h2",
+                                        width: '140px',
+                                        textTransform: 'none',
+                                        backgroundColor: "#0b0b3b",
+                                        fontSize: '1.5rem',
+                                        fontWeight: 'bold',
+                                        '&:hover': {
+                                            backgroundColor: "#0b0b3b",
+                                        },
+                                    }}
+                                >
+                                    Close
+                                </Button>
+                            </Box>
                         </Box>
-                    </form>
-                </Box>
+                    </Box>
+                </form>
+
             </Modal>
             <Modal open={deleteOpen} onClose={handleDeleteClose}>
                 <Box sx={{ ...modalStyle }}>
-                    <Typography variant="h6" mb={2}>
+                    <Typography variant="h4" mb={2}>
                         Confirm Deletion
                     </Typography>
                     <Typography variant="body1" mb={2}>
                         Are you sure you want to delete this channel?
                     </Typography>
-                    <Box display="flex" justifyContent="flex-end" gap={2}>
-                        <Button variant="outlined" color="primary" onClick={handleDeleteClose}>
+                    <Box display="flex" justifyContent="flex-end" mt={4} gap={2}>
+                        <Button
+                            variant="contained"
+                            color="primary"
+                            onClick={handleDeleteClose}
+                            sx={{
+
+                                variant: 'h4',
+                                borderColor: 'black',
+                                color: 'black',
+                                backgroundColor: "#ffffff",
+                                border: '2.5px solid black',
+                                '&:hover': {
+                                    backgroundColor: "#ffffff",
+                                    borderColor: 'black'
+                                },
+                            }}>
                             Cancel
                         </Button>
                         <Button variant="contained" color="error" onClick={() => handleDeleteChannel(deleteChannelId)}>
@@ -616,10 +740,11 @@ const modalStyle = {
     top: '50%',
     left: '50%',
     transform: 'translate(-50%, -50%)',
-    width: 400,
+    width: 500,
     bgcolor: 'background.paper',
     boxShadow: 24,
-    p: 4,
+    borderRadius: 6,
+    p: 6,
 };
 
 

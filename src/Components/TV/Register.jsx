@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 const Register = () => {
     const [name, setName] = useState('');
@@ -15,7 +16,9 @@ const Register = () => {
     const validateName = (name) => /^[A-Za-z\s]+$/.test(name);
     const validatePhoneNumber = (phoneNumber) => /^[0-9]+$/.test(phoneNumber);
 
-    const handleRegister = () => {
+    const handleRegister = async (event) => {
+        event.preventDefault();
+
         if (!name) {
             setErrorMessage('Name is required.');
             return;
@@ -57,11 +60,32 @@ const Register = () => {
             return;
         }
 
-        // Mock registration logic
-        // Save role to localStorage for simplicity
-        localStorage.setItem('userRole', role);
-        // Navigate to login page after registration
-        navigate('/login');
+        const formData = new FormData();
+        formData.append('username', name);
+        formData.append('phoneNum', phoneNumber);
+        formData.append('email', email);
+        formData.append('password', password);
+        formData.append('role', role);
+        formData.append('image', image);
+
+        try {
+            const response = await axios.post('http://localhost:4000/ums/register', formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            console.log(response.data);
+            // Assuming response.data.imageUrl is returned after successful registration
+            const imageUrl = response.data.imageUrl;
+            // Save role to localStorage for simplicity
+            localStorage.setItem('userRole', role);
+            localStorage.setItem('userImage', imageUrl);
+            // Navigate to login page after registration
+            navigate('/login');
+        } catch (error) {
+            console.error('Error registering:', error);
+            setErrorMessage('Registration failed. Please try again.');
+        }
     };
 
     const handleImageChange = (e) => {
@@ -83,112 +107,114 @@ const Register = () => {
                             <Typography variant="h2" component="div" sx={{ mb: 5 }} color="black">
                                 REGISTER
                             </Typography>
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                placeholder="Name"
-                                margin="normal"
-                                value={name}
-                                onChange={(e) => setName(e.target.value)}
-                                sx={{ mb: 2 }}
-                                error={!name || (!!errorMessage && !validateName(name))}
-                                helperText={!name ? 'Name is required.' : (errorMessage && !validateName(name) ? 'Name must contain only letters.' : '')}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                placeholder="Phone number"
-                                margin="normal"
-                                value={phoneNumber}
-                                onChange={(e) => setPhoneNumber(e.target.value)}
-                                sx={{ mb: 2 }}
-                                error={!phoneNumber || (!!errorMessage && !validatePhoneNumber(phoneNumber))}
-                                helperText={!phoneNumber ? 'Phone number is required.' : (errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : '')}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                placeholder="Email"
-                                margin="normal"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                sx={{ mb: 2 }}
-                                error={!email || (!!errorMessage && !email.endsWith('@gmail.com'))}
-                                helperText={!email ? 'Email is required.' : (errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : '')}
-                            />
-                            <TextField
-                                fullWidth
-                                variant="outlined"
-                                type="password"
-                                placeholder="Password"
-                                margin="normal"
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                                sx={{ mb: 2 }}
-                                error={!password || (!!errorMessage && password.length < 8)}
-                                helperText={!password ? 'Password is required.' : (errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : '')}
-                            />
-                            <Select
-                                fullWidth
-                                value={role}
-                                onChange={(e) => setRole(e.target.value)}
-                                label="Role"
-                                sx={{ mb: 2 }}
-                                error={!role || (!!errorMessage && !role)}
-                            >
-                                <MenuItem value="">
-                                    <em>None</em>
-                                </MenuItem>
-                                <MenuItem value="admin">Admin</MenuItem>
-                                <MenuItem value="user">User</MenuItem>
-                            </Select>
-                            <Button
-                                variant="contained"
-                                component="label"
-                                sx={{
-                                    mt: 2,
-                                    py: 2,
-                                    fontSize: '1rem',
-                                    bgcolor: '#030327',
-                                    textTransform: 'capitalize',
-                                    borderRadius: '10px',
-                                    '&:hover': {
-                                        bgcolor: '#030327',
-                                    },
-                                }}
-                            >
-                                Upload Image
-                                <input
-                                    type="file"
-                                    hidden
-                                    accept="image/*"
-                                    onChange={handleImageChange}
+                            <form onSubmit={handleRegister}>
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    placeholder="Name"
+                                    margin="normal"
+                                    value={name}
+                                    onChange={(e) => setName(e.target.value)}
+                                    sx={{ mb: 2 }}
+                                    error={!name || (!!errorMessage && !validateName(name))}
+                                    helperText={!name ? 'Name is required.' : (errorMessage && !validateName(name) ? 'Name must contain only letters.' : '')}
                                 />
-                            </Button>
-                            {errorMessage && (
-                                <Typography color="error" sx={{ mt: 2 }}>
-                                    {errorMessage}
-                                </Typography>
-                            )}
-                            <Button
-                                variant="contained"
-                                color="primary"
-                                onClick={handleRegister}
-                                sx={{
-                                    mt: 4,
-                                    py: 2,
-                                    fontSize: '1.25rem',
-                                    bgcolor: '#030327',
-                                    textTransform: 'capitalize',
-                                    borderRadius: '10px',
-                                    '&:hover': {
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    placeholder="Phone number"
+                                    margin="normal"
+                                    value={phoneNumber}
+                                    onChange={(e) => setPhoneNumber(e.target.value)}
+                                    sx={{ mb: 2 }}
+                                    error={!phoneNumber || (!!errorMessage && !validatePhoneNumber(phoneNumber))}
+                                    helperText={!phoneNumber ? 'Phone number is required.' : (errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : '')}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    placeholder="Email"
+                                    margin="normal"
+                                    value={email}
+                                    onChange={(e) => setEmail(e.target.value)}
+                                    sx={{ mb: 2 }}
+                                    error={!email || (!!errorMessage && !email.endsWith('@gmail.com'))}
+                                    helperText={!email ? 'Email is required.' : (errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : '')}
+                                />
+                                <TextField
+                                    fullWidth
+                                    variant="outlined"
+                                    type="password"
+                                    placeholder="Password"
+                                    margin="normal"
+                                    value={password}
+                                    onChange={(e) => setPassword(e.target.value)}
+                                    sx={{ mb: 2 }}
+                                    error={!password || (!!errorMessage && password.length < 8)}
+                                    helperText={!password ? 'Password is required.' : (errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : '')}
+                                />
+                                <Select
+                                    fullWidth
+                                    value={role}
+                                    onChange={(e) => setRole(e.target.value)}
+                                    label="Role"
+                                    sx={{ mb: 2 }}
+                                    error={!role || (!!errorMessage && !role)}
+                                >
+                                    <MenuItem value="">
+                                        <em>None</em>
+                                    </MenuItem>
+                                    <MenuItem value="admin">Admin</MenuItem>
+                                    <MenuItem value="user">User</MenuItem>
+                                </Select>
+                                <Button
+                                    variant="contained"
+                                    component="label"
+                                    sx={{
+                                        mt: 2,
+                                        py: 2,
+                                        fontSize: '1rem',
                                         bgcolor: '#030327',
-                                    },
-                                }}
-                                fullWidth
-                            >
-                                Register
-                            </Button>
+                                        textTransform: 'capitalize',
+                                        borderRadius: '10px',
+                                        '&:hover': {
+                                            bgcolor: '#030327',
+                                        },
+                                    }}
+                                >
+                                    Upload Image
+                                    <input
+                                        type="file"
+                                        hidden
+                                        accept="image/*"
+                                        onChange={handleImageChange}
+                                    />
+                                </Button>
+                                {errorMessage && (
+                                    <Typography color="error" sx={{ mt: 2 }}>
+                                        {errorMessage}
+                                    </Typography>
+                                )}
+                                <Button
+                                    variant="contained"
+                                    color="primary"
+                                    type="submit"
+                                    sx={{
+                                        mt: 4,
+                                        py: 2,
+                                        fontSize: '1.25rem',
+                                        bgcolor: '#030327',
+                                        textTransform: 'capitalize',
+                                        borderRadius: '10px',
+                                        '&:hover': {
+                                            bgcolor: '#030327',
+                                        },
+                                    }}
+                                    fullWidth
+                                >
+                                    Register
+                                </Button>
+                            </form>
                         </Box>
                     </Grid>
                 </Grid>

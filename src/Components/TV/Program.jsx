@@ -232,6 +232,8 @@ const Program = () => {
             });
             console.log(response.data);
             handleClose();
+            fetchPrograms();
+
 
         } catch (error) {
             console.error('Error adding program:', error);
@@ -393,9 +395,10 @@ const Program = () => {
                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                             sx={{ width: 40, height: 40 }}
                         />
-                        <Link to="/logout">
+                        <Link to="/login">
                             <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
                         </Link>
+                            
                     </Box>
                 </Box>
                 <Paper elevation={3} sx={{ p: 3, mt: 4, flexGrow: 1, overflowY: 'auto', ml: 4, mr: 3, mb: 2 }}>
@@ -458,23 +461,23 @@ const Program = () => {
                                     </Button>
                                 </Box>
                             </Box>
-                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: 2.5 }} />
+                            <Divider sx={{ mt: 2, mb: 3, mx: 1, ml: 2, mr: -2 }} />
                             <Grid item container justifyContent="space-between" ml={4} >
 
-                                <Typography   variant="h6">Id</Typography>
-                                <Typography sx={{  mr:10, minWidth: 150 }} variant="h6">Title</Typography>
-                                <Typography   sx={{ ml:-17, minWidth: 100 }} variant="h6">Duration</Typography>
-                                <Typography  sx={{ minWidth: 250 }} mr={-17} variant="h6">Description</Typography>
-                                <Typography  variant="h6">Status</Typography>
-                                <Typography  variant="h6">Action</Typography>
+                                <Typography variant="h6">Id</Typography>
+                                <Typography sx={{ mr: 10, minWidth: 150 }} variant="h6">Title</Typography>
+                                <Typography sx={{ ml: -17, minWidth: 100 }} variant="h6">Duration</Typography>
+                                <Typography sx={{ minWidth: 250 }} mr={-17} variant="h6">Description</Typography>
+                                <Typography ml={8} mr={15} variant="h6">Status</Typography>
+                                <Typography ml={-8} mr={6} variant="h6">Action</Typography>
                             </Grid>
-                            <Divider sx={{ mt: 3, mb: 4, mx: 1, ml: 2, mr: 2.5 }} />
+                            <Divider sx={{ mt: 3, mb: 4, mx: 1, ml: 2, mr: -2 }} />
                             {currentPageData.map(program => (
-                                <Grid key={program.id} item container justifyContent="space-between" alignItems="center" ml={4} sx={{  paddingTop: 1, paddingBottom: 1 }}>
+                                <Grid key={program.id} item container justifyContent="space-between" alignItems="center" ml={4} sx={{ paddingTop: 1, paddingBottom: 1 }}>
                                     <Typography sx={{ minWidth: 100 }}>{program.id}</Typography>
-                                    <Typography sx={{ minWidth: 200 }}>{program.title}</Typography>
+                                    <Typography sx={{ minWidth: 150 }}>{program.title}</Typography>
                                     <Typography sx={{ minWidth: 150 }}>{program.duration}</Typography>
-                                    <Typography sx={{ minWidth: 250 }}>{program.description}</Typography>
+                                    <Typography sx={{ minWidth: 200 }}>{program.description}</Typography>
                                     <Grid item xs={2} container justifyContent="center">
                                         <Button
                                             variant='contained'
@@ -631,7 +634,7 @@ const Program = () => {
                                 <TextField
                                     variant="standard"
                                     select
-                                    label=" Select..."
+                                    label=""
                                     fullWidth
                                     InputProps={{
                                         sx: {
@@ -764,161 +767,428 @@ const Program = () => {
                 </Box>
             </Modal>
             {/* // Edit channel modal */}
-            <Modal open={editOpen} onClose={handleEditClose}>
-                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
-                    <Typography variant="h6">Edit Program</Typography>
-                    <form onSubmit={handleEditProgram}>
+            <Modal
+                open={editOpen}
+                onClose={handleEditClose}
+                aria-labelledby="edit-program-modal-title"
+                aria-describedby="edit-program-modal-description"
+            >
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="100vh"
+                >
+                    <Box
+                        component="form"
+                        onSubmit={handleEditProgram}
+                        display="flex"
+                        flexDirection="column"
+                        px={{ xs: 2, md: 8 }}
+                        py={{ xs: 8, md: 5 }}
+                        bgcolor="white"
+                        borderRadius={4}
+                        maxWidth={1000}
+                        width="100%"
+                        boxShadow={3}
+                    >
+                        <Typography
+                            variant="h3"
+                            fontWeight="bold"
+                            color="black"
+                            align="center"
+                            sx={{ mb: { xs: 4, md: 6 } }}
+                        >
+                            Edit Program
+                        </Typography>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Video URL</Typography>
+                                <TextField
+                                    label="Video URL"
+                                    fullWidth
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                    value={currentProgram?.videoUrl || ''}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                                />
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Title</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={currentProgram?.title || ''}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                />
+                            </Box>
+                        </Box>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flex="1">
+                                <Typography variant="h5">Duration</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={parseInt(currentProgram?.duration || '')}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, duration: parseInt(e.target.value) })}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                />
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flex="1">
+                                <Typography variant="h5">Category</Typography>
+                                <TextField
+                                    variant="standard"
+                                    select
+                                    label=" Select..."
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    InputLabelProps={{
+                                        shrink: false,
+                                        sx: {
+                                            ml: 3,
+                                            typography: 'h5'
+                                        }
+                                    }}
+                                    value={currentCategories?.categoryId || ''}
+                                    onChange={(e) => setCurrentCategory({ ...currentCategories, categoryId: e.target.value })}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                >
+                                    {
+                                        categoryData && categoryData.map((items) => (
+                                            <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                        ))}
+                                </TextField>
+                            </Box>
+                        </Box>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Channel</Typography>
+                                <TextField
+                                    label="Select..."
+                                    select
+                                    variant="standard"
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    // label="Channel ID"
+
+                                    value={currentChannel?.channelId || ''}
+                                    onChange={(e) => setCurrentChannel({ ...currentChannel, channelId: e.target.value })}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                >
+                                    {
+                                        channel && channel.map((items) => (
+                                            <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                        ))}
+                                </TextField>
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Type</Typography>
+                                <TextField
+                                    label="Select..."
+                                    select
+                                    variant="standard"
+                                    fullWidth
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    // label="Type"
+                                    value={currentType?.typeId || ''}
+                                    onChange={(e) => setCurrentType({ ...currentType, typeId: e.target.value })}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                >
+                                    {
+                                        typeData && typeData.map((items) => (
+                                            <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
+                                        ))
+                                    }
+                                </TextField>
+                            </Box>
+                        </Box>
+
+                        <Typography variant="h5">Description</Typography>
                         <TextField
-                            label="Title"
+                            label=""
+                            variant="standard"
                             fullWidth
-                            sx={{ my: 2 }}
-                            value={currentProgram?.title || ''}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
-                        />
-                        <TextField
-                            label="Duration"
-                            fullWidth
-                            sx={{ my: 2 }}
-                            value={parseInt(currentProgram?.duration || '')}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, duration: parseInt(e.target.value) })}
-                        />
-                        <TextField
-                            label="Description"
-                            fullWidth
-                            sx={{ my: 2 }}
+                            multiline
+                            rows={4}
                             value={currentProgram?.description || ''}
                             onChange={(e) => setCurrentProgram({ ...currentProgram, description: e.target.value })}
+                            sx={{ mt: 2, bgcolor: 'grey.200', borderRadius: 2 }}
                         />
-                        <TextField
-                            label="Video URL"
-                            fullWidth
-                            sx={{ my: 2 }}
-                            value={currentProgram?.videoUrl || ''}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
-                        />
-                        <TextField
-                            label="Channel ID"
-                            fullWidth
-                            select
-                            sx={{ my: 2 }}
-                            value={currentChannel?.channelId || ''}
-                            onChange={(e) => setCurrentChannel({ ...currentChannel, channelId: e.target.value })}
-                        >
-                            {
-                                channel && channel.map((items) => (
-                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
-                                ))}
-                        </TextField>
-
-                        <TextField
-                            label="Category"
-                            select
-                            variant='outlined'
-                            fullWidth
-                            sx={{ my: 2 }}
-                            value={currentCategories?.categoryId || ''}
-                            onChange={(e) => setCurrentCategory({ ...currentCategories, categoryId: e.target.value })}
-                        >
-                            {
-                                categoryData && categoryData.map((items) => (
-                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
-                                ))}
-                        </TextField>
-                        <TextField
-                            label="Type"
-                            select
-                            fullWidth
-                            sx={{ my: 2 }}
-                            value={currentType?.typeId || ''}
-                            onChange={(e) => setCurrentType({ ...currentType, typeId: e.target.value })}
-                        >
-                            {
-                                typeData && typeData.map((items) => (
-                                    <MenuItem key={items.id} value={items.id}>{items.name}</MenuItem>
-                                ))
-                            }
-                        </TextField>
-                        <Button onClick={handleEditClose} sx={{ mr: 1 }}>Cancel</Button>
-                        <Button variant="contained" color="primary" type="submit">
-                            Save
-                        </Button>
-                    </form>
+                        <Box display="flex" justifyContent="flex-end" mt={7} gap={4} >
+                            <Button
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleEditClose}
+                                sx={{
+                                    mr: 5,
+                                    variant: "h2",
+                                    width: '160px',
+                                    textTransform: 'none',
+                                    borderColor: 'black',
+                                    color: 'black',
+                                    backgroundColor: "#ffffff",
+                                    fontSize: '1.55rem',
+                                    fontWeight: 'bold',
+                                    border: '2.5px solid black',
+                                    '&:hover': {
+                                        backgroundColor: "#ffffff",
+                                        borderColor: 'black'
+                                    },
+                                }}
+                            >
+                                Cancel
+                            </Button>
+                            <Button
+                                type="submit"
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    variant: "h2",
+                                    width: '160px',
+                                    textTransform: 'none',
+                                    backgroundColor: "#0b0b3b",
+                                    fontSize: '1.5rem',
+                                    fontWeight: 'bold',
+                                    '&:hover': {
+                                        backgroundColor: "#0b0b3b",
+                                    },
+                                }}
+                            >
+                                Save
+                            </Button>
+                        </Box>
+                    </Box>
                 </Box>
             </Modal>
 
             {/* View channel modal */}
-            <Modal open={viewOpen} onClose={handleViewClose}>
-                <Box sx={{ p: 4, bgcolor: 'white', borderRadius: 1, width: 400, mx: 'auto', my: 'auto' }}>
-                    <Typography variant="h6">View Program</Typography>
-                    <form onSubmit={handleViewProgram}>
+            <Modal
+                open={viewOpen}
+                onClose={handleClose}
+                aria-labelledby="view-program-modal-title"
+                aria-describedby="view-program-modal-description"
+            >
+
+                <Box
+                    display="flex"
+                    justifyContent="center"
+                    alignItems="center"
+                    minHeight="100vh"
+                >
+                    <Box
+                        component="form"
+                        onSubmit={handleViewProgram}
+                        display="flex"
+                        flexDirection="column"
+                        px={{ xs: 2, md: 8 }}
+                        py={{ xs: 8, md: 5 }}
+                        bgcolor="white"
+                        borderRadius={4}
+                        maxWidth={1000}
+                        width="100%"
+                        boxShadow={3}
+                    >
+                        <Typography
+                            variant="h3"
+                            fontWeight="bold"
+                            color="black"
+                            align="center"
+                            sx={{ mb: { xs: 4, md: 6 } }}
+                        >
+                            Add Program
+                        </Typography>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Video URL</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={currentProgram ? currentProgram.videoUrl : ''}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
+                                    fullWidth
+                                    required
+                                    disabled
+                                />
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Title</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={currentProgram ? currentProgram.title : ''}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                                    fullWidth
+                                    required
+                                    disabled
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                />
+                            </Box>
+                        </Box>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flex="1">
+                                <Typography variant="h5">Duration</Typography>
+                                <TextField
+                                    variant="standard"
+                                    label=""
+                                    InputProps={{
+                                        sx: {
+                                            height: '50px'
+                                        }
+                                    }}
+                                    value={currentProgram ? currentProgram.duration : ''}
+                                    onChange={(e) => setCurrentProgram({ ...currentProgram, duration: e.target.value })}
+                                    fullWidth
+                                    required
+                                    disabled
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                />
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flex="1">
+                                <Typography variant="h5">Category</Typography>
+                                <TextField
+                                    variant="standard"
+                                    select
+                                    label=" Select..."
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    InputLabelProps={{
+                                        shrink: false,
+                                        sx: {
+                                            ml: 3,
+                                            typography: 'h5'
+                                        }
+                                    }}
+                                    value={currentProgram && currentProgram.category ? currentProgram.category.name : ''}
+                                    fullWidth
+                                    required
+                                    disabled
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                >
+
+                                </TextField>
+                            </Box>
+                        </Box>
+                        <Box display="flex" flexDirection={{ xs: 'column', md: 'row' }} gap={2} mt={2}>
+                            <Box display="flex" flexDirection="column" mr={10} gap={1} flexGrow={1}>
+                                <Typography variant="h5">Channel</Typography>
+                                <TextField
+                                    label="Select..."
+                                    select
+                                    variant="standard"
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    value={currentProgram && currentProgram.channel ? currentProgram.channel.name : ''}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                    fullWidth
+                                    required
+                                    disabled
+                                >
+
+                                </TextField>
+                            </Box>
+                            <Box display="flex" flexDirection="column" gap={1} flexGrow={1}>
+                                <Typography variant="h5">Type</Typography>
+                                <TextField
+                                    label="Select..."
+                                    select
+                                    variant="standard"
+                                    InputProps={{
+                                        sx: {
+                                            height: '35px'
+                                        }
+                                    }}
+                                    value={currentProgram && currentProgram.type ? currentProgram.type.name : ''}
+                                    sx={{ bgcolor: 'grey.200', borderRadius: 2, width: '450px' }}
+                                    fullWidth
+                                    required
+                                    disabled
+                                >
+
+                                </TextField>
+                            </Box>
+                        </Box>
+                        <Typography variant="h5">Description</Typography>
                         <TextField
-                            label="Title"
-                            sx={{ my: 2 }}
-                            value={currentProgram ? currentProgram.title : ''}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, title: e.target.value })}
+                            label=""
+                            variant="standard"
                             fullWidth
-                            required
-                            disabled
-                        />
-                        <TextField
-                            label="Duration"
-                            sx={{ my: 2 }}
-                            value={currentProgram ? currentProgram.duration : ''}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, duration: e.target.value })}
-                            fullWidth
-                            required
-                            disabled
-                        />
-                        <TextField
-                            label="Description"
-                            sx={{ my: 2 }}
+                            multiline
+                            rows={4}
                             value={currentProgram ? currentProgram.description : ''}
                             onChange={(e) => setCurrentProgram({ ...currentProgram, description: e.target.value })}
-                            fullWidth
+                            sx={{ bgcolor: 'grey.200', borderRadius: 2 }}
                             required
                             disabled
-                        />
-                        <TextField
-                            label="Video URL"
-                            sx={{ my: 2 }}
-                            value={currentProgram ? currentProgram.videoUrl : ''}
-                            onChange={(e) => setCurrentProgram({ ...currentProgram, videoUrl: e.target.value })}
-                            fullWidth
-                            required
-                            disabled
-                        />
-                        <TextField
-                            label="Channel"
-                            sx={{ my: 2 }}
-                            value={currentProgram && currentProgram.channel ? currentProgram.channel.name : ''}
-                            fullWidth
-                            required
-                            disabled
-                        />
-
-                        <TextField
-                            label="Type"
-                            sx={{ my: 2 }}
-                            value={currentProgram && currentProgram.type ? currentProgram.type.name : ''}
-                            fullWidth
-                            required
-                            disabled
-                        />
-
-                        <TextField
-                            label="Category"
-                            sx={{ my: 2 }}
-                            value={currentProgram && currentProgram.category ? currentProgram.category.name : ''}
-                            fullWidth
-                            required
-                            disabled
-                        />
-
-                        <Box mt={2} display="flex" justifyContent="flex-end">
-                            <Button onClick={handleViewClose} sx={{ mr: 1 }}>Close</Button>
+                        ></TextField>
+                        <Box display="flex" justifyContent="flex-end" mt={7} gap={4} >
+                            <Button 
+                                variant="outlined"
+                                color="secondary"
+                                onClick={handleViewClose} 
+                                sx={{
+                                    mr: 5,
+                                    variant: "h2",
+                                    width: '160px',
+                                    textTransform: 'none',
+                                    borderColor: 'black',
+                                    color: 'black',
+                                    backgroundColor: "#ffffff",
+                                    fontSize: '1.55rem',
+                                    fontWeight: 'bold',
+                                    border: '2.5px solid black',
+                                    '&:hover': {
+                                        backgroundColor: "#ffffff",
+                                        borderColor: 'black'
+                                    },
+                                }}
+                            >
+                                Close
+                            </Button>
 
                         </Box>
-                    </form>
+
+                    </Box>
                 </Box>
             </Modal>
 
