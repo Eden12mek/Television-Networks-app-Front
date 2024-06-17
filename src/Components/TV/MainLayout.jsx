@@ -13,6 +13,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import dayjs from 'dayjs';
+import styled from 'styled-components';
+import Auth from '../Auth';
 
 
 
@@ -191,6 +193,64 @@ const MainContent = () => {
         fetchChannels();
     }, []);
 
+    // Styled components for the modal menu
+    const ModalContainer = styled.div`
+  position: absolute;
+  top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's above other content */
+`;
+
+    const MenuList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+    const MenuItem = styled(Link)`
+  text-decoration: none;
+  color: black;
+  margin: 10px 0;
+`;
+
+    const MenuDivider = styled.hr`
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+`;
+const StyledMenuItem = styled(Link)`
+  text-decoration: none;
+  color: red; /* Set color to red */
+  margin: 10px 0;
+  text-transform: uppercase; /* Transform text to uppercase */
+`;
+
+const [menuOpen, setMenuOpen] = useState(false);
+const [userName, setUserName] = useState('');
+const [userEmail, setUserEmail] = useState('');
+
+useEffect(() => {
+    // Fetch user information from localStorage
+    const storedUserName = localStorage.getItem('userName');
+    const storedUserEmail = localStorage.getItem('userEmail');
+    if (storedUserName) {
+        setUserName(storedUserName);
+    }
+    if (storedUserEmail) {
+        setUserEmail(storedUserEmail);
+    }
+}, []);
+
+const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+};
+
     return (
         <Box component="main" sx={{ flexGrow: 1, p: 3, marginLeft: 42, backgroundColor: '#0E0F2E', color: 'white' }}>
             <Box sx={{ display: 'flex', alignItems: 'center', mb: 10, mt: 5 }}>
@@ -226,12 +286,29 @@ const MainContent = () => {
                         }}
                     />
                 </Box>
+                <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
             </Box>
 
             {loading ? ( // Render loading message while fetching movie details
                 <Typography variant="body1">Loading movie details...</Typography>
             ) : programs.length > 0 ? ( // If movie data is available
-                // <Card sx={{ backgroundColor: '#191A39', color: 'white' }}>
                 <CardContent>
                     <Typography variant="h3" component="div">
                         {programs[0].title}
@@ -349,4 +426,4 @@ const MainLayout = () => {
 };
 
 
-export default MainLayout;
+export default Auth(MainLayout);

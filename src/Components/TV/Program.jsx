@@ -28,9 +28,11 @@ import {
     Delete as DeleteIcon,
     Visibility as VisibilityIcon
 } from '@mui/icons-material';
-import { styled } from '@mui/material/styles';
+// import { styled } from '@mui/material/styles';
 import AddChannel from './AddChannel';
 import AddProgram from './AddProgram';
+import styled from 'styled-components';
+import Auth from '../Auth';
 
 
 //Switch design
@@ -294,6 +296,64 @@ const Program = () => {
             console.error('Error toggling suspend:', error);
         }
     };
+     // Styled components for the modal menu
+const ModalContainer = styled.div`
+position: absolute;
+top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+left: 50%; /* Center horizontally */
+transform: translateX(-50%); /* Center horizontally */
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+z-index: 1000; /* Ensure it's above other content */
+`;
+
+  const MenuList = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+`;
+
+  const MenuItem = styled(Link)`
+text-decoration: none;
+color: black;
+margin: 10px 0;
+`;
+
+  const MenuDivider = styled.hr`
+width: 100%;
+margin: 10px 0;
+border: none;
+border-top: 1px solid #ccc;
+`;
+const StyledMenuItem = styled(Link)`
+  text-decoration: none;
+  color: red; /* Set color to red */
+  margin: 10px 0;
+  text-transform: uppercase; /* Transform text to uppercase */
+`;
+
+
+const [menuOpen, setMenuOpen] = useState(false);
+const [userName, setUserName] = useState('');
+const [userEmail, setUserEmail] = useState('');
+
+useEffect(() => {
+    // Fetch user information from localStorage
+    const storedUserName = localStorage.getItem('userName');
+    const storedUserEmail = localStorage.getItem('userEmail');
+    if (storedUserName) {
+        setUserName(storedUserName);
+    }
+    if (storedUserEmail) {
+        setUserEmail(storedUserEmail);
+    }
+}, []);
+
+const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+};
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -395,9 +455,24 @@ const Program = () => {
                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                             sx={{ width: 40, height: 40 }}
                         />
-                        <Link to="/login">
-                            <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
-                        </Link>
+                        <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2,mr:2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
                             
                     </Box>
                 </Box>
@@ -1227,4 +1302,4 @@ const Program = () => {
 
 
 
-export default Program;
+export default Auth(Program);

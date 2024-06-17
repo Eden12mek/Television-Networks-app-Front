@@ -22,8 +22,9 @@ import AddChannel from './AddChannel';
 import axios from 'axios';
 import ReactApexChart from 'react-apexcharts';
 import dayjs from 'dayjs';
-
-import ApexCharts from 'apexcharts'
+import styled from 'styled-components';
+import ApexCharts from 'apexcharts';
+import Auth from '../Auth';
 
 const Dashboard = () => {
     const [open, setOpen] = useState(false);
@@ -37,6 +38,66 @@ const Dashboard = () => {
     const [chartSeries, setChartSeries] = useState([]);
     const [graphRendered, setGraphRendered] = useState(false);
     const graphRef = React.useRef(null);
+
+
+     // Styled components for the modal menu
+const ModalContainer = styled.div`
+position: absolute;
+top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+left: 50%; /* Center horizontally */
+transform: translateX(-50%); /* Center horizontally */
+background-color: white;
+padding: 20px;
+border-radius: 8px;
+box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+z-index: 1000; /* Ensure it's above other content */
+`;
+
+  const MenuList = styled.div`
+display: flex;
+flex-direction: column;
+align-items: center;
+`;
+
+  const MenuItem = styled(Link)`
+text-decoration: none;
+color: black;
+margin: 10px 0;
+`;
+
+  const MenuDivider = styled.hr`
+width: 100%;
+margin: 10px 0;
+border: none;
+border-top: 1px solid #ccc;
+`;
+const StyledMenuItem = styled(Link)`
+  text-decoration: none;
+  color: red; /* Set color to red */
+  margin: 10px 0;
+  text-transform: uppercase; /* Transform text to uppercase */
+`;
+
+
+const [menuOpen, setMenuOpen] = useState(false);
+const [userName, setUserName] = useState('');
+const [userEmail, setUserEmail] = useState('');
+
+useEffect(() => {
+    // Fetch user information from localStorage
+    const storedUserName = localStorage.getItem('userName');
+    const storedUserEmail = localStorage.getItem('userEmail');
+    if (storedUserName) {
+        setUserName(storedUserName);
+    }
+    if (storedUserEmail) {
+        setUserEmail(storedUserEmail);
+    }
+}, []);
+
+const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+};
 
 
     // Organize programs by category
@@ -353,7 +414,7 @@ const Dashboard = () => {
                                 alt="Dashboard"
                             />
                             <Link to="/dashboard">
-                                <Dashboard>
+                                
                                 <Typography
                                     variant="h4"
                                     sx={{
@@ -364,7 +425,7 @@ const Dashboard = () => {
                                 >
                                     Dashboard
                                 </Typography>
-                                </Dashboard>
+                               
                             </Link>
                         </Box>
 
@@ -421,9 +482,24 @@ const Dashboard = () => {
                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                             sx={{ width: 40, height: 40 }}
                         />
-                        <Link to="/login">
-                            <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
-                        </Link>
+                        <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2, mr:2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
                     </Box>
                 </Box>
                 <Paper elevation={3} sx={{ p: 3, mt: 4, flexGrow: 1, overflowY: 'auto', ml: 4, mr: 3, mb: 2 }}>
@@ -443,15 +519,15 @@ const Dashboard = () => {
                                             pr: 94,
                                             bgcolor: 'grey.100',
                                             height: '50px',
-                                            // Remove default bottom border
+                                           
                                             '&::before': {
                                                 borderBottom: 'none',
                                             },
-                                            // Ensure no bottom border when focused
+                                            
                                             '&::after': {
                                                 borderBottom: 'none',
                                             },
-                                            // Ensure no bottom border on hover
+                                            
                                             '&:hover:not(.Mui-disabled)::before': {
                                                 borderBottom: 'none',
                                             },
@@ -504,12 +580,10 @@ const Dashboard = () => {
                             <Box display="flex" flexDirection="column" mt={12} bgcolor="white" borderRadius={2} boxShadow={3} p={2} width="75%">
                                 <Box display="flex" justifyContent="space-between" alignItems="center" p={1} bgcolor="black" borderRadius={2} color="white" pr={50}>
                                     <Typography variant="h6" ml={1}>Program on Category</Typography>
-                                    {/* <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/c1f67459de57d298769361de06d5ca333e76dd029602803b603895a4398311a2?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Icon" style={{ height: 10, width: 10 }} /> */}
 
                                 </Box>
                                 <Grid container spacing={2} mt={1} ml={0}>
                                     <Grid item xs={12} md={8}>
-                                        {/* <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/fe4aa281908a71af5b9e63374c34a1bf687e09c58173349e70c588deba1c1276?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Graph" style={{ width: '40%' }} /> */}
                                         <div
                                             className="bg-white dark:bg-gray-700 p-3 rounded-lg"
 
@@ -534,7 +608,6 @@ const Dashboard = () => {
                                 <Grid container spacing={2}>
                                     <Grid item xs={12} md={7}>
                                         <Typography variant="h4" color="white" bgcolor="black" p={2} borderRadius={2}>Program with Type</Typography>
-                                        {/* <img src="https://cdn.builder.io/api/v1/image/assets/TEMP/e10e55ca3bfca0f3c957e54b8c6544f28fcefd1e988958ec18bafa3d6d06a90d?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&" alt="Graph" style={{ width: '100%', marginTop: 16 }} /> */}
                                         <div className="" ref={graphRef}></div>
                                     </Grid>
                                     <Grid item xs={12} md={5}>
@@ -567,7 +640,6 @@ const Dashboard = () => {
                             </Box>
                         </Box>
                     </Box>
-                    {/* </Box> */}
                 </Paper>
             </Box>
         </Box>
@@ -576,4 +648,4 @@ const Dashboard = () => {
 
 
 
-export default Dashboard;
+export default Auth(Dashboard);

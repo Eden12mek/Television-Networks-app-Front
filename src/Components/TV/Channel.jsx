@@ -1,26 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import {
-    Box,
-    Grid,
-    Paper,
-    Typography,
-    Avatar,
-    Button,
-    IconButton,
-    Container,
-    Divider,
-    Modal,
-    TextField,
-    FormControlLabel,
-    Switch
-} from '@mui/material';
+import {Box,Grid, Paper,Typography,Avatar,Button, IconButton, Container, Divider, Modal, TextField, Switch} from '@mui/material';
 import {
     Search as SearchIcon,
-    IosShare as ExportIcon,
-    FilterList as FilterListIcon,
-    Group as GroupIcon,
-    Add as AddIcon,
     Done as DoneIcon,
     Edit as EditIcon,
     Delete as DeleteIcon,
@@ -28,8 +10,8 @@ import {
     Visibility as VisibilityIcon
 } from '@mui/icons-material';
 import axios from 'axios';
-import { styled } from '@mui/material/styles';
-import { grey } from '@mui/material/colors';
+import Auth from '../Auth';
+import styled from 'styled-components';
 
 
 
@@ -55,6 +37,7 @@ const CustomSwitch = styled(Switch)(({ theme, checked }) => ({
         backgroundColor: checked ? 'green' : 'red',
     },
 }));
+
 
 
 
@@ -214,7 +197,67 @@ const Channel = () => {
             console.error('Error viewing channel:', error);
         }
     };
-    console.log(channels)
+   // Styled components for the modal menu
+    const ModalContainer = styled.div`
+    position: absolute;
+    top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+    left: 50%; /* Center horizontally */
+    transform: translateX(-50%); /* Center horizontally */
+    background-color: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    z-index: 1000; /* Ensure it's above other content */
+    `;
+
+    const MenuList = styled.div`
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    `;
+
+    const MenuItem = styled(Link)`
+    text-decoration: none;
+    color: black;
+    margin: 10px 0;
+    `;
+
+    const MenuDivider = styled.hr`
+    width: 100%;
+    margin: 10px 0;
+    border: none;
+    border-top: 1px solid #ccc;
+    `;
+    const StyledMenuItem = styled(Link)`
+    text-decoration: none;
+    color: red; /* Set color to red */
+    margin: 10px 0;
+    text-transform: uppercase; /* Transform text to uppercase */
+    `;
+
+
+    const [menuOpen, setMenuOpen] = useState(false);
+    const [userName, setUserName] = useState('');
+    const [userEmail, setUserEmail] = useState('');
+
+    useEffect(() => {
+        // Fetch user information from localStorage
+        const storedUserName = localStorage.getItem('userName');
+        const storedUserEmail = localStorage.getItem('userEmail');
+        if (storedUserName) {
+            setUserName(storedUserName);
+        }
+        if (storedUserEmail) {
+            setUserEmail(storedUserEmail);
+        }
+    }, []);
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
+
+
+
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', bgcolor: 'neutral.100' }}>
@@ -314,9 +357,24 @@ const Channel = () => {
                             src="https://cdn.builder.io/api/v1/image/assets/TEMP/24280f58b233f95f4a3bd288d1205a45a787b8f5b8caa8c95876efacd64ac8e7?apiKey=3d3ae0f91c6c4ae29c2605db8e3e2267&"
                             sx={{ width: 40, height: 40 }}
                         />
-                        <Link to="/login">
-                            <Avatar sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }} />
-                        </Link>
+                        <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2, mr:2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
                     </Box>
                 </Box>
                 <Paper elevation={3} sx={{ p: 3, mt: 4, flexGrow: 1, overflowY: 'auto', ml: 4, mr: 3, mb: 2 }}>
@@ -336,15 +394,15 @@ const Channel = () => {
                                             pr: 94,
                                             bgcolor: 'grey.100',
                                             height: '50px',
-                                            // Remove default bottom border
+                                            
                                             '&::before': {
                                                 borderBottom: 'none',
                                             },
-                                            // Ensure no bottom border when focused
+                                           
                                             '&::after': {
                                                 borderBottom: 'none',
                                             },
-                                            // Ensure no bottom border on hover
+                                            
                                             '&:hover:not(.Mui-disabled)::before': {
                                                 borderBottom: 'none',
                                             },
@@ -487,13 +545,13 @@ const Channel = () => {
                                         height: '50px',
                                         borderRadius: '8px 8px 0 0',
                                         '&::before': {
-                                            borderBottom: '2px solid black',  // Bold bottom border
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&::after': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&:hover:not(.Mui-disabled)::before': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                            borderBottom: '2px solid black',  
                                         },
                                     }
                                 }}
@@ -573,13 +631,13 @@ const Channel = () => {
                                         width: '400px',
                                         borderRadius: '8px 8px 0 0',
                                         '&::before': {
-                                            borderBottom: '2px solid black',  // Bold bottom border
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&::after': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&:hover:not(.Mui-disabled)::before': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                            borderBottom: '2px solid black',  
                                         },
                                     }
                                 }}
@@ -657,13 +715,13 @@ const Channel = () => {
                                         width: '400px',
                                         borderRadius: '8px 8px 0 0',
                                         '&::before': {
-                                            borderBottom: '2px solid black',  // Bold bottom border
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&::after': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold when focused
+                                            borderBottom: '2px solid black',  
                                         },
                                         '&:hover:not(.Mui-disabled)::before': {
-                                            borderBottom: '2px solid black',  // Ensure the bottom border remains bold on hover
+                                            borderBottom: '2px solid black',  
                                         },
                                     }
                                 }}
@@ -749,4 +807,4 @@ const modalStyle = {
 
 
 
-export default Channel;
+export default Auth(Channel);

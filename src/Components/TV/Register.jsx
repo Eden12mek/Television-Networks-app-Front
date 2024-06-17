@@ -1,23 +1,30 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Box, Typography, TextField, Button, Grid, Select, MenuItem } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
 const Register = () => {
-    const [name, setName] = useState('');
-    const [phoneNumber, setPhoneNumber] = useState('');
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    const [role, setRole] = useState('');
+    const [name, setName] = useState(localStorage.getItem('registerName') || '');
+    const [phoneNumber, setPhoneNumber] = useState(localStorage.getItem('registerPhoneNumber') || '');
+    const [email, setEmail] = useState(localStorage.getItem('registerEmail') || '');
+    const [password, setPassword] = useState(localStorage.getItem('registerPassword') || '');
+    const [role, setRole] = useState(localStorage.getItem('registerRole') || '');
     const [image, setImage] = useState(null);
     const [errorMessage, setErrorMessage] = useState('');
     const navigate = useNavigate();
+   
 
     const validateName = (name) => /^[A-Za-z\s]+$/.test(name);
     const validatePhoneNumber = (phoneNumber) => /^[0-9]+$/.test(phoneNumber);
 
     const handleRegister = async (event) => {
         event.preventDefault();
+        // Clear localStorage after successful registration
+        localStorage.removeItem('registerName');
+        localStorage.removeItem('registerPhoneNumber');
+        localStorage.removeItem('registerEmail');
+        localStorage.removeItem('registerPassword');
+        localStorage.removeItem('registerRole');
 
         if (!name) {
             setErrorMessage('Name is required.');
@@ -92,13 +99,23 @@ const Register = () => {
         setImage(e.target.files[0]);
     };
 
+    // Save form data to localStorage on change
+    useEffect(() => {
+        localStorage.setItem('registerName', name);
+        localStorage.setItem('registerPhoneNumber', phoneNumber);
+        localStorage.setItem('registerEmail', email);
+        localStorage.setItem('registerPassword', password);
+        localStorage.setItem('registerRole', role);
+    }, [name, phoneNumber, email, password, role]);
     return (
-        <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh" bgcolor="black" p={6.05}>
+        <Box display="flex" justifyContent="center" alignItems="center" minHeight="90vh" bgcolor="#0E0F2E" p={6.05}>
             <Box
                 display="flex"
                 justifyContent="center"
                 bgcolor="white"
-                p={2}
+                borderRadius='5%'
+                p={0}
+                mt={-2}
                 width={{ xs: '90%', sm: '70%', md: '50%', lg: '40%' }}
             >
                 <Grid container spacing={5} direction="column">
@@ -116,9 +133,13 @@ const Register = () => {
                                     value={name}
                                     onChange={(e) => setName(e.target.value)}
                                     sx={{ mb: 2 }}
-                                    error={!name || (!!errorMessage && !validateName(name))}
-                                    helperText={!name ? 'Name is required.' : (errorMessage && !validateName(name) ? 'Name must contain only letters.' : '')}
+                                    error={!!errorMessage && (!name || !validateName(name))}
+                                    helperText={
+                                        (!name && !errorMessage) ? 'Name is required.' :
+                                            (errorMessage && !validateName(name) ? 'Name must contain only letters.' : '')
+                                    }
                                 />
+
                                 <TextField
                                     fullWidth
                                     variant="outlined"
@@ -127,9 +148,13 @@ const Register = () => {
                                     value={phoneNumber}
                                     onChange={(e) => setPhoneNumber(e.target.value)}
                                     sx={{ mb: 2 }}
-                                    error={!phoneNumber || (!!errorMessage && !validatePhoneNumber(phoneNumber))}
-                                    helperText={!phoneNumber ? 'Phone number is required.' : (errorMessage && !validatePhoneNumber(phoneNumber) ? 'Phone number must contain only digits.' : '')}
+                                    error={!!errorMessage && (!phoneNumber || !validatePhoneNumber(phoneNumber))}
+                                    helperText={
+                                        (!phoneNumber && !errorMessage) ? 'Phone number is required.' :
+                                            (!validatePhoneNumber(phoneNumber) && !errorMessage) ? 'Phone number must contain only digits.' : ''
+                                    }
                                 />
+
                                 <TextField
                                     fullWidth
                                     variant="outlined"
@@ -138,9 +163,13 @@ const Register = () => {
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
                                     sx={{ mb: 2 }}
-                                    error={!email || (!!errorMessage && !email.endsWith('@gmail.com'))}
-                                    helperText={!email ? 'Email is required.' : (errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : '')}
+                                    error={!!errorMessage && (!email || !email.endsWith('@gmail.com'))}
+                                    helperText={
+                                        (!email && !errorMessage) ? 'Email is required.' :
+                                            (errorMessage && !email.endsWith('@gmail.com') ? 'Email must be a @gmail.com address.' : '')
+                                    }
                                 />
+
                                 <TextField
                                     fullWidth
                                     variant="outlined"
@@ -150,23 +179,31 @@ const Register = () => {
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}
                                     sx={{ mb: 2 }}
-                                    error={!password || (!!errorMessage && password.length < 8)}
-                                    helperText={!password ? 'Password is required.' : (errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : '')}
+                                    error={!!errorMessage && (!password || password.length < 8)}
+                                    helperText={
+                                        (!password && !errorMessage) ? 'Password is required.' :
+                                            (errorMessage && password.length < 8 ? 'Password must be at least 8 characters long.' : '')
+                                    }
                                 />
+
                                 <Select
                                     fullWidth
+                                    label="Role"
                                     value={role}
                                     onChange={(e) => setRole(e.target.value)}
-                                    label="Role"
                                     sx={{ mb: 2 }}
-                                    error={!role || (!!errorMessage && !role)}
+                                    error={!!errorMessage && !role}
+                                    helperText={
+                                        (!role && !errorMessage) ? 'Role is required.' : ''
+                                    }
                                 >
-                                    <MenuItem value="">
-                                        <em>None</em>
+                                    <MenuItem value="" disabled>
+                                        Select Role
                                     </MenuItem>
                                     <MenuItem value="admin">Admin</MenuItem>
                                     <MenuItem value="user">User</MenuItem>
                                 </Select>
+
                                 <Button
                                     variant="contained"
                                     component="label"
@@ -190,11 +227,7 @@ const Register = () => {
                                         onChange={handleImageChange}
                                     />
                                 </Button>
-                                {errorMessage && (
-                                    <Typography color="error" sx={{ mt: 2 }}>
-                                        {errorMessage}
-                                    </Typography>
-                                )}
+
                                 <Button
                                     variant="contained"
                                     color="primary"

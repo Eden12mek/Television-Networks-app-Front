@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Divider, Tabs, Tab, Card, CardContent, CardMedia, IconButton, InputBase } from '@mui/material';
+import { Box, Typography, Avatar, Divider, Tabs, Tab, Card, CardContent, CardMedia, IconButton, InputBase } from '@mui/material';
 import WeatherIcon from '@mui/icons-material/WbSunny';
 import SearchIcon from '@mui/icons-material/Search';
 import ClockIcon from '@mui/icons-material/AccessTime';
@@ -9,6 +9,8 @@ import KeyboardArrowLeftIcon from '@mui/icons-material/KeyboardArrowLeft';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import { WatchLater } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import styled from 'styled-components';
+import Auth from '../Auth';
 
 const Favorite = () => {
     const [categoryData, setCategoryData] = useState([]);
@@ -73,6 +75,63 @@ const Favorite = () => {
         const storedLaters = JSON.parse(localStorage.getItem('laters')) || [];
         setFavorites(storedLaters);
     }, []);
+
+    // Styled components for the modal menu
+    const ModalContainer = styled.div`
+  position: absolute;
+  top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's above other content */
+`;
+
+    const MenuList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+    const MenuItem = styled(Link)`
+  text-decoration: none;
+  color: black;
+  margin: 10px 0;
+`;
+
+    const MenuDivider = styled.hr`
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+`;
+const StyledMenuItem = styled(Link)`
+  text-decoration: none;
+  color: red; /* Set color to red */
+  margin: 10px 0;
+  text-transform: uppercase; /* Transform text to uppercase */
+`;
+const [menuOpen, setMenuOpen] = useState(false);
+    const [userName, setUserName] = useState('');
+
+    useEffect(() => {
+        // Fetch user information from localStorage
+        const storedUserName = localStorage.getItem('userName');
+        const storedUserEmail = localStorage.getItem('userEmail');
+        if (storedUserName) {
+            setUserName(storedUserName);
+        }
+        if (storedUserEmail) {
+            setUserEmail(storedUserEmail);
+        }
+    }, []);
+
+    const toggleMenu = () => {
+        setMenuOpen(!menuOpen);
+    };
+    const [userEmail, setUserEmail] = useState('');
 
     return (
         <Box sx={{ display: 'flex', height: '100vh', backgroundColor: '#11102F', color: '11102F' }}>
@@ -193,6 +252,24 @@ const Favorite = () => {
                             }}
                         />
                     </Box>
+                    <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
                     {userImage && <img src={userImage} alt="User" style={{ width: 40, height: 40, borderRadius: '50%', marginRight: 10 }} />}
                 </Box>
 
@@ -273,4 +350,4 @@ const Favorite = () => {
     );
 };
 
-export default Favorite;
+export default Auth(Favorite);

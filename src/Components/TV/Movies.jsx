@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Box, Typography, Divider, Tabs, Tab, Card, CardContent, CardMedia, IconButton, InputBase } from '@mui/material';
+import { Box, Typography, Avatar,Divider, Tabs, Tab, Card, CardContent, CardMedia, IconButton, InputBase } from '@mui/material';
 import WeatherIcon from '@mui/icons-material/WbSunny';
 import SearchIcon from '@mui/icons-material/Search';
 import ClockIcon from '@mui/icons-material/AccessTime';
@@ -10,6 +10,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import axios from 'axios';
 import { WatchLater } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import Auth from '../Auth';
+import styled from 'styled-components';
 
 const Movies = () => {
     const [categoryData, setCategoryData] = useState([]);
@@ -22,13 +24,7 @@ const Movies = () => {
     const [laters, setLaters] = useState([]);
 
 
-    // const channels = [
-    //     { name: 'HBO', icon: <TVIcon /> },
-    //     { name: 'ABC TV', icon: <HomeIcon /> },
-    //     { name: 'AMC TV', icon: <MovieIcon /> },
-    //     { name: 'ESPN', icon: <SportsIcon /> },
-    //     // Add more channels here
-    // ];
+   
 
     // Fetch categories from the backend
     const fetchCategoryData = async () => {
@@ -127,6 +123,66 @@ const Movies = () => {
         const storedLaters = JSON.parse(localStorage.getItem('laters')) || [];
         setLaters(storedLaters);
     }, []);
+    // Styled components for the modal menu
+    const ModalContainer = styled.div`
+  position: absolute;
+  top: calc(100% + 10px); /* Position below Avatar, adjust as needed */
+  left: 50%; /* Center horizontally */
+  transform: translateX(-50%); /* Center horizontally */
+  background-color: white;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+  z-index: 1000; /* Ensure it's above other content */
+`;
+
+    const MenuList = styled.div`
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+`;
+
+    const MenuItem = styled(Link)`
+  text-decoration: none;
+  color: black;
+  margin: 10px 0;
+`;
+
+    const MenuDivider = styled.hr`
+  width: 100%;
+  margin: 10px 0;
+  border: none;
+  border-top: 1px solid #ccc;
+`;
+const StyledMenuItem = styled(Link)`
+  text-decoration: none;
+  color: red; /* Set color to red */
+  margin: 10px 0;
+  text-transform: uppercase; /* Transform text to uppercase */
+`;
+
+
+
+
+const [menuOpen, setMenuOpen] = useState(false);
+const [userName, setUserName] = useState('');
+const [userEmail, setUserEmail] = useState('');
+
+useEffect(() => {
+    // Fetch user information from localStorage
+    const storedUserName = localStorage.getItem('userName');
+    const storedUserEmail = localStorage.getItem('userEmail');
+    if (storedUserName) {
+        setUserName(storedUserName);
+    }
+    if (storedUserEmail) {
+        setUserEmail(storedUserEmail);
+    }
+}, []);
+
+const toggleMenu = () => {
+    setMenuOpen(!menuOpen);
+};
 
 
 
@@ -227,7 +283,7 @@ const Movies = () => {
                             display: 'flex',
                             alignItems: 'center',
                             cursor: 'pointer',
-                            borderRadius: showSearchInput ? 0 : '50%', // Set the border radius based on the state
+                            borderRadius: showSearchInput ? 0 : '50%', 
                             width: showSearchInput ? 200 : 40,
                             height: 40,
                             backgroundColor: 'rgba(255, 255, 255, 0.2)',
@@ -249,6 +305,24 @@ const Movies = () => {
                             }}
                         />
                     </Box>
+                    <div style={{ position: 'relative' }}>
+                        <Avatar
+                            sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                            onClick={toggleMenu}
+                        />
+                        {menuOpen && (
+                            <ModalContainer>
+                                <MenuList>
+                                    <Avatar
+                                        sx={{ width: 40, height: 40, bgcolor: 'grey.300', ml: 2 }}
+                                    />
+                                    <Typography variant="body1">{userEmail}</Typography>
+                                    <MenuDivider />
+                                    <StyledMenuItem to="/login">LOGOUT</StyledMenuItem>
+                                </MenuList>
+                            </ModalContainer>
+                        )}
+                    </div>
                     {userImage && <img src={userImage} alt="User" style={{ width: 40, height: 40, borderRadius: '50%', marginRight: 10 }} />}
                 </Box>
 
@@ -301,7 +375,7 @@ const Movies = () => {
                                 <CardMedia
                                     component="img"
                                     height="400"
-                                    image={program.imageUrl} // Ensure 'imageUrl' is correct as per your backend response
+                                    image={program.imageUrl} 
                                     alt={program.title}
                                 />
                                 <CardContent>
@@ -375,4 +449,4 @@ const Movies = () => {
     );
 };
 
-export default Movies;
+export default Auth(Movies);
